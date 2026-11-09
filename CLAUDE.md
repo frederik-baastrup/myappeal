@@ -10,7 +10,7 @@ Alt, der er særligt for nichen, ligger i `wp-content/plugins/playform-feeds/src
 
 ## Status (9. nov. 2026)
 
-Kodebasen er klar, men sitet er ikke oprettet endnu: intet SiteGround-site, intet GitHub-repo (ingen remote), ingen udrulning. Ejeren sætter op senere og søger skønhedsprogrammerne hos Partner-ads, når shoppen er online (listen med forslag står i Claudes noter fra 9. nov. 2026: brede butikker som Med24, Lusso di Lusso, Staybeautiful; hårstyling som Beauty4Me, Ionic Dry, Probrush, Care Copenhagen; negle, parfume, herrepleje og tandpleje).
+Kodebasen er klar og ligger i github.com/frederik-baastrup/myappeal (9. nov. 2026). SiteGround-sitet, secrets og variablerne SITE_DIR/SITE_URL mangler, så udrulningen springes over indtil da. Ejeren sætter op senere og søger skønhedsprogrammerne hos Partner-ads, når shoppen er online (listen med forslag står i Claudes noter fra 9. nov. 2026: brede butikker som Med24, Lusso di Lusso, Staybeautiful; hårstyling som Beauty4Me, Ionic Dry, Probrush, Care Copenhagen; negle, parfume, herrepleje og tandpleje).
 
 ## Opbygning (det, der er særligt for Myappeal)
 
