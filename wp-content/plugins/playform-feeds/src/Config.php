@@ -58,6 +58,8 @@ final class Config {
 				'haartrimmer'           => '?barbering',
 				'epilatoripl'           => '?haarfjerning',
 				'glattejern'            => '?haarstyling',
+				'kroellejern'           => '?haarstyling',
+				'haartoerrer'           => '?haarstyling',
 				'glatteboerste'         => '?haarstyling',
 			] ],
 			'hvidevareshoppen' => [ 'name' => 'HvidevareShoppen.dk', 'url' => "$base&bannerid=56457&feedid=1000", 'category_map' => [

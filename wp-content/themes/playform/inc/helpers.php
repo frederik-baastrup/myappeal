@@ -346,5 +346,5 @@ function playform_post_ad_label( $p ): string {
 	if ( get_post_meta( $p->ID, '_pf_picks', true ) || str_contains( $p->post_content, 'sponsored' ) || str_contains( $p->post_content, 'fitbase_valg' ) || str_contains( $p->post_content, 'playform_produkter' ) ) {
 		return 'Reklamelinks';
 	}
-	return '';
+	return 'Annonce'; // Myappeal: alle artikler mærkes (ejerens ønske 9. nov. 2026)
 }
