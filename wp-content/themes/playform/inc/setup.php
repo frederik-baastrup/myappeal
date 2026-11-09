@@ -849,6 +849,22 @@ function playform_affiliate_hosts(): array {
 function playform_import_legacy_posts( int $per_run = 10 ): void {
 	$home = (string) wp_parse_url( (string) get_option( 'home' ), PHP_URL_HOST );
 	$src  = (string) wp_parse_url( PLAYFORM_LEGACY_SOURCE, PHP_URL_HOST );
+	// v2 (9. nov. 2026): artiklerne skal følge vores skabelon (renset HTML, ingen gamle billeder). Første import kørte
+	// med v1 – slet de importerede og hent dem igen.
+	if ( get_option( 'playform_legacy_v' ) !== '2' && ! str_ends_with( $home, $src ) ) {
+		foreach ( get_posts( [ 'post_type' => 'post', 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_pf_legacy_post' ] ) as $old_id ) { // phpcs:ignore
+			foreach ( get_attached_media( '', $old_id ) as $m ) {
+				wp_delete_attachment( $m->ID, true );
+			}
+			wp_delete_post( $old_id, true );
+		}
+		delete_option( 'playform_legacy_done' );
+		delete_option( 'playform_legacy_posts' );
+		delete_option( 'playform_legacy_page' );
+		delete_option( 'playform_legacy_report' );
+		delete_transient( 'playform_legacy_lock' );
+		update_option( 'playform_legacy_v', '2', false );
+	}
 	if ( get_option( 'playform_legacy_done' ) || str_ends_with( $home, $src ) || 'localhost' === $home ) {
 		return; // færdig, eller sitet ligger selv på myappeal.dk (så ville vi hente fra os selv)
 	}
@@ -872,6 +888,7 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 	if ( 400 === $code || ( 200 === $code && is_array( $posts ) && ! $posts ) ) {
 		update_option( 'playform_legacy_done', current_time( 'mysql' ), false ); // ingen flere sider
 		delete_transient( 'playform_legacy_lock' );
+		playform_article_images(); // Pexels-billederne til de flyttede artikler
 		return;
 	}
 	if ( ! is_array( $posts ) ) {
@@ -957,45 +974,10 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 			update_post_meta( $id, '_pf_hidden', 1 );
 			delete_transient( 'playform_hidden_posts' );
 		}
-		// Billeder i teksten ligger på det gamle site og forsvinder, når domænet flyttes: hent dem til uploads.
-		$html = preg_replace( '/\s(srcset|sizes)=("[^"]*"|\'[^\']*\')/i', '', $html );
-		$html = preg_replace_callback(
-			'#(<img\s[^>]*src=["\'])([^"\']+)(["\'])#i',
-			static function ( array $m ) use ( $id, $src ): string {
-				$url = html_entity_decode( $m[2] );
-				if ( ! str_ends_with( strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) ), $src ) ) {
-					return $m[0];
-				}
-				$full = preg_replace( '/-\d+x\d+(?=\.(jpe?g|png|webp|gif)$)/i', '', $url ); // originalen frem for et udsnit
-				$tmp  = download_url( $full, 30 );
-				if ( is_wp_error( $tmp ) && $full !== $url ) {
-					$tmp = download_url( $url, 30 );
-				}
-				if ( is_wp_error( $tmp ) ) {
-					return $m[0];
-				}
-				$att = media_handle_sideload( [ 'name' => basename( (string) wp_parse_url( $full, PHP_URL_PATH ) ), 'tmp_name' => $tmp ], $id );
-				if ( is_wp_error( $att ) ) {
-					@unlink( $tmp ); // phpcs:ignore
-					return $m[0];
-				}
-				update_post_meta( $att, '_pf_legacy_img', $url );
-				return $m[1] . esc_url( (string) wp_get_attachment_url( $att ) ) . $m[3];
-			},
-			$html
-		);
-		wp_update_post( [ 'ID' => $id, 'post_content' => trim( $html ) ] );
-		$img = (string) ( $p['_embedded']['wp:featuredmedia'][0]['source_url'] ?? '' );
-		if ( $img ) {
-			$tmp = download_url( $img, 30 );
-			if ( ! is_wp_error( $tmp ) ) {
-				$att = media_handle_sideload( [ 'name' => basename( (string) wp_parse_url( $img, PHP_URL_PATH ) ), 'tmp_name' => $tmp ], $id );
-				if ( ! is_wp_error( $att ) ) {
-					set_post_thumbnail( $id, $att );
-					update_post_meta( $id, '_pf_legacy_img', $img ); // playform_article_images() lader det være
-				}
-			}
-		}
+		// Vores skabelon, ikke den gamle: rens HTML'en (ingen gamle klasser, kolonner, indholdsfortegnelser og billeder).
+		// Tekst og links bevares ordret – også i solgte artikler. Artikelbilledet kommer fra assets/img/articles/<slug>.jpg
+		// (Pexels, playform_article_images()) – ejeren 9. nov. 2026: "du må godt udskifte pics, men links skal stadig være der".
+		wp_update_post( [ 'ID' => $id, 'post_content' => playform_clean_legacy_html( $html ) ] );
 		// Senest opdateret som på det gamle site (wp_insert_post sætter altid "nu").
 		global $wpdb;
 		$wpdb->update( $wpdb->posts, [ 'post_modified' => (string) ( $p['modified'] ?? $p['date'] ), 'post_modified_gmt' => (string) ( $p['modified_gmt'] ?? $date_gmt ) ], [ 'ID' => $id ] );
@@ -1010,6 +992,70 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 	wp_schedule_single_event( time() + 60, 'playform_legacy_posts' ); // næste side om et minut
 }
 add_action( 'playform_legacy_posts', static fn() => playform_import_legacy_posts() );
+
+/**
+ * Renser HTML fra det gamle site, så artiklen ligner resten af vores artikler: kun overskrifter, afsnit, lister,
+ * citater, tabeller, fed/kursiv og links. Klasser, style, kolonner/kort (Bootstrap), indholdsfortegnelser (nav),
+ * billeder, iframes og scripts fjernes. Links bevares med href, rel og target (solgte links må ikke ændres).
+ */
+function playform_clean_legacy_html( string $html ): string {
+	if ( trim( $html ) === '' || ! class_exists( 'DOMDocument' ) ) {
+		return $html;
+	}
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+	$doc->loadHTML( '<?xml encoding="utf-8"?><div id="pf-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+	libxml_clear_errors();
+	$xp   = new DOMXPath( $doc );
+	$drop = [ 'script', 'style', 'noscript', 'iframe', 'img', 'picture', 'figure', 'svg', 'nav', 'form', 'button', 'input', 'video', 'audio', 'source' ];
+	foreach ( $drop as $tag ) {
+		foreach ( iterator_to_array( $doc->getElementsByTagName( $tag ) ) as $n ) {
+			$n->parentNode->removeChild( $n );
+		}
+	}
+	$keep_tags  = [ 'h2', 'h3', 'h4', 'p', 'ul', 'ol', 'li', 'a', 'strong', 'b', 'em', 'i', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'br' ];
+	$keep_attrs = [ 'a' => [ 'href', 'rel', 'target' ], 'th' => [ 'colspan', 'rowspan' ], 'td' => [ 'colspan', 'rowspan' ] ];
+	$root       = $doc->getElementById( 'pf-root' );
+	// Bagfra, så børn behandles før forældre.
+	$all = iterator_to_array( $xp->query( './/*', $root ) );
+	foreach ( array_reverse( $all ) as $el ) {
+		$tag = strtolower( $el->nodeName );
+		if ( 'h1' === $tag ) { // titlen står allerede i vores skabelon
+			$el->parentNode->removeChild( $el );
+			continue;
+		}
+		if ( in_array( $tag, [ 'h5', 'h6' ], true ) ) {
+			$new = $doc->createElement( 'h4' );
+			while ( $el->firstChild ) {
+				$new->appendChild( $el->firstChild );
+			}
+			$el->parentNode->replaceChild( $new, $el );
+			continue;
+		}
+		if ( ! in_array( $tag, $keep_tags, true ) ) { // div, span, section, figure-rester …: pak ud
+			while ( $el->firstChild ) {
+				$el->parentNode->insertBefore( $el->firstChild, $el );
+			}
+			$el->parentNode->removeChild( $el );
+			continue;
+		}
+		foreach ( iterator_to_array( $el->attributes ) as $attr ) {
+			if ( ! in_array( $attr->name, $keep_attrs[ $tag ] ?? [], true ) ) {
+				$el->removeAttribute( $attr->name );
+			}
+		}
+	}
+	$out = '';
+	foreach ( iterator_to_array( $root->childNodes ) as $n ) {
+		$out .= $doc->saveHTML( $n );
+	}
+	// Løs tekst (fra udpakkede div'er) i egne afsnit, tomme afsnit og overflødige linjeskift væk.
+	$out = preg_replace( '#<p>(\s|&nbsp;|\x{00a0}|<br\s*/?>)*</p>#u', '', $out );
+	$out = preg_replace( '#<(strong|b|em|i)>\s*</\1>#', '', $out );
+	$out = wpautop( trim( (string) $out ) );
+	$out = preg_replace( '#<p>(\s|&nbsp;|<br\s*/?>)*</p>\s*#u', '', $out );
+	return trim( (string) $out );
+}
 
 add_action(
 	'playform_reclassify',
