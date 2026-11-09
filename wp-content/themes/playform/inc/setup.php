@@ -851,7 +851,7 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 	$src  = (string) wp_parse_url( PLAYFORM_LEGACY_SOURCE, PHP_URL_HOST );
 	// v2 (9. nov. 2026): artiklerne skal følge vores skabelon (renset HTML, ingen gamle billeder). Første import kørte
 	// med v1 – slet de importerede og hent dem igen.
-	if ( get_option( 'playform_legacy_v' ) !== '2' && ! str_ends_with( $home, $src ) ) {
+	if ( get_option( 'playform_legacy_v' ) !== '3' && ! str_ends_with( $home, $src ) ) {
 		foreach ( get_posts( [ 'post_type' => 'post', 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_pf_legacy_post' ] ) as $old_id ) { // phpcs:ignore
 			foreach ( get_attached_media( '', $old_id ) as $m ) {
 				wp_delete_attachment( $m->ID, true );
@@ -863,7 +863,7 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 		delete_option( 'playform_legacy_page' );
 		delete_option( 'playform_legacy_report' );
 		delete_transient( 'playform_legacy_lock' );
-		update_option( 'playform_legacy_v', '2', false );
+		update_option( 'playform_legacy_v', '3', false ); // v3: titler uden HTML
 	}
 	if ( get_option( 'playform_legacy_done' ) || str_ends_with( $home, $src ) || 'localhost' === $home ) {
 		return; // færdig, eller sitet ligger selv på myappeal.dk (så ville vi hente fra os selv)
@@ -932,7 +932,7 @@ function playform_import_legacy_posts( int $per_run = 10 ): void {
 		}
 		$sponsored = array_key_exists( 'sponsored', $opt ) ? (bool) $opt['sponsored'] : (bool) $sold_hosts;
 		$date_gmt  = (string) ( $p['date_gmt'] ?? '' );
-		$report[ $slug ] = [ 'title' => html_entity_decode( (string) ( $p['title']['rendered'] ?? '' ), ENT_QUOTES, 'UTF-8' ), 'date' => (string) ( $p['date'] ?? '' ), 'sponsored' => $sponsored, 'links' => array_keys( $sold_hosts ) ];
+		$report[ $slug ] = [ 'title' => trim( html_entity_decode( wp_strip_all_tags( (string) ( $p['title']['rendered'] ?? '' ) ), ENT_QUOTES, 'UTF-8' ) ), 'date' => (string) ( $p['date'] ?? '' ), 'sponsored' => $sponsored, 'links' => array_keys( $sold_hosts ) ];
 		if ( ! empty( $opt['skip'] ) || ( $sponsored && $date_gmt !== '' && $date_gmt < $cutoff && empty( $opt['keep'] ) ) ) {
 			$done[ $slug ] = 'sprunget over'; // solgt og over 3 år gammel: flyttes ikke (410)
 			continue;
