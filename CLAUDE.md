@@ -39,7 +39,7 @@ Tekster: skriv aldrig, at vi dækker alle danske butikker – kun "fra de butikk
 
 ## Udrulning
 
-Hvert push til `main` udrulles via GitHub Actions (FTPS) til SiteGround, når variablerne `SITE_DIR` (fx `frederikbXX.sg-host.com/public_html`) og `SITE_URL` er sat (eller standardværdierne i `deploy.yml` er udfyldt). Kræver secrets `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`. Mangler noget, springes udrulningen over. Når domænet skiftes til myappeal.dk i SiteGround, finder udrulningen selv den nye mappe og FTP-kontoen (`@myappeal.dk`).
+Hvert push til `main` udrulles via GitHub Actions (FTPS) til SiteGround, når variablerne `SITE_DIR` (fx `frederikb14.sg-host.com/public_html`) og `SITE_URL` er sat (eller standardværdierne i `deploy.yml` er udfyldt). Kræver secrets `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`. Mangler noget, springes udrulningen over. Når domænet skiftes til myappeal.dk i SiteGround, finder udrulningen selv den nye mappe og FTP-kontoen (`@myappeal.dk`).
 
 Cronjobs på SiteGround (som de andre sites, ret mappen):
 
