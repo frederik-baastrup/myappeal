@@ -1410,7 +1410,7 @@ ul.guide__facts { display: inline-flex; flex-wrap: wrap; align-items: center; ma
 .review-card__go { flex: 0 0 auto; color: #fff; opacity: .7; }
 @media (max-width: 640px) { .review-card { padding: 16px; gap: 12px; } .review-card__icon { width: 36px; height: 36px; } .review-card__body b { font-size: 15.5px; } .review-card__go { display: none; } }
 
-/* Myappeal: ordmærket er bredt og lavt (ca. 5:1), så højden holdes lav og bredden følger med. */
+/* Myappeal: ordmærket er bredt og lavt (ca. 4,4:1), så højden holdes lav og bredden følger med. */
 .logo img { height: 30px; width: auto; max-width: none; }
 @media (max-width: 1080px) { .logo img { height: 28px; } }
 @media (max-width: 760px) { .logo img { height: 26px; } }
