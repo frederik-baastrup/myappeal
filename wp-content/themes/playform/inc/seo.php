@@ -80,7 +80,7 @@ add_filter(
 			return $parts;
 		}
 		if ( is_front_page() ) {
-			return [ 'title' => playform_site( 'name' ) . '.dk – Find det rigtige ' . playform_site( 'niche' ) ];
+			return [ 'title' => playform_site( 'name' ) . '.dk – ' . mb_strtoupper( mb_substr( playform_site( 'niche' ), 0, 1 ) ) . mb_substr( playform_site( 'niche' ), 1 ) . ' samlet ét sted' ]; // "Find det rigtige …" passer ikke til "skønhed og personlig pleje"
 		}
 		if ( function_exists( 'playform_current_campaign' ) && playform_current_campaign() ) {
 			$c              = playform_current_campaign();
@@ -121,7 +121,7 @@ add_action(
 		} elseif ( is_tax( 'product_cat' ) ) {
 			$desc = wp_strip_all_tags( term_description() ) ?: sprintf( 'Se %s fra de butikker, vi samarbejder med, samlet på %s. Sammenlign priser, se butikkernes tilbud og find den rigtige model.', mb_strtolower( playform_cat_label( get_queried_object() ) ), playform_site( 'name' ) );
 		} elseif ( is_post_type_archive( 'product' ) ) {
-			$desc = sprintf( 'Alle produkter på %s: %s fra de danske webshops, vi samarbejder med. Priser og lager opdateres to gange i døgnet.', playform_site( 'name' ), playform_site( 'niche' ) );
+			$desc = sprintf( 'Alle produkter på %s: %s fra de butikker, vi samarbejder med. Priser og lager opdateres to gange i døgnet.', playform_site( 'name' ), playform_site( 'niche' ) );
 		} elseif ( is_singular( 'product' ) ) {
 			$id    = get_the_ID();
 			$p     = wc_get_product( $id );
