@@ -527,7 +527,12 @@ function playform_seed_best(): void {
 		}
 		if ( $existing ) {
 			$post = $existing[0];
-			if ( get_post_meta( $post->ID, '_pf_seed_hash', true ) !== md5( $post->post_content ) ) {
+			$legacy = (bool) get_post_meta( $post->ID, '_pf_legacy_post', true ); // 1:1-flyttet fra det gamle site: den omskrevne guide afløser den
+			if ( $legacy ) {
+				delete_post_meta( $post->ID, '_pf_legacy_post' );
+				delete_post_meta( $post->ID, '_pf_sponsored' ); // kun gamle (over 3 år) solgte guides skrives om – så må linket gå
+			}
+			if ( ! $legacy && get_post_meta( $post->ID, '_pf_seed_hash', true ) !== md5( $post->post_content ) ) {
 				$id = $post->ID; // redaktøren har rettet teksten – lad den være
 			} else {
 				$data['ID'] = $post->ID;
