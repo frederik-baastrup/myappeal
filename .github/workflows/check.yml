@@ -1,0 +1,34 @@
+name: Tjek sitet
+
+# Kør manuelt (Actions → Tjek sitet → Run workflow): henter de vigtigste sider på det rigtige domæne og viser
+# status, omdirigeringer, robots og tema – så man kan se, om sitet virker, uden at være logget ind.
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Domæne (tomt = myappeal.dk)'
+        required: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tjek sider
+        env:
+          DOMAIN: ${{ inputs.domain || 'myappeal.dk' }}
+        run: |
+          B="https://$DOMAIN"
+          for p in / /hudpleje/ /haarstyling/ /haarstyling/glattejern/ /parfume/dameparfume/ /tandpleje/el-tandboerste/ /koebsguide/ /viden/ /robots.txt /wp-sitemap.xml /saadan-fungerer-det/; do
+            out=$(curl -s -o body.html -w "%{http_code} %{redirect_url}" --max-time 60 "$B$p")
+            theme=$(grep -o 'themes/[a-z0-9_-]*' body.html | head -1)
+            robots=$(grep -o '<meta name=.robots.[^>]*>' body.html | head -1)
+            prods=$(grep -o '[0-9.]* produkter' body.html | head -1); picks=$(grep -o 'class="pick[ "]' body.html | wc -l); cards=$(grep -o 'data-product\|class="pcard\|class="product-card' body.html | wc -l); prods="$prods picks=$picks kort=$cards"
+            echo "$p → $out | $theme | $robots | $prods"
+          done
+          echo "--- wp-admin kæde"; curl -s -I --max-redirs 5 -L "$B/wp-admin/" | grep -i '^HTTP\|^location\|^set-cookie: wordpress_test' 
+          echo "--- forside kæde"; curl -s -I --max-redirs 5 -L "$B/" | grep -i '^HTTP\|^location'
+          for f in /wp-content/themes/playform/style.css /readme.html /wp-includes/images/w-logo-blue.png /wp-login.php; do echo "$f → $(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 30 "$B$f")"; done
+          echo "--- headers forside"; curl -s -I --max-time 30 "$B/" | grep -iv '^set-cookie\|^date\|^content-security'
+          echo "--- robots.txt"; curl -s "$B/robots.txt"
+          echo "--- www → "; curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "https://www.$DOMAIN/"
+          echo "--- http → "; curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "http://$DOMAIN/"
