@@ -1090,8 +1090,29 @@ add_action(
 		$res = \Playform\Feeds\Importer::reclassify();
 		update_option( 'playform_config_hash', (string) md5_file( WP_PLUGIN_DIR . '/playform-feeds/src/Config.php' ), false );
 		update_option( 'playform_reclassify_last', [ 'time' => current_time( 'mysql' ) ] + $res, false );
+		playform_remove_dropped_categories();
 	}
 );
+
+/** Kategorier, der er fjernet fra Config (Myappeal: barbering og herrekategorier 10. nov. 2026), slettes med underkategorier. */
+function playform_remove_dropped_categories(): void {
+	$keep = array_keys( \Playform\Feeds\Config::categories() );
+	foreach ( [ 'barbering' ] as $slug ) {
+		if ( in_array( $slug, $keep, true ) || ! ( $t = get_term_by( 'slug', $slug, 'product_cat' ) ) ) {
+			continue;
+		}
+		foreach ( (array) get_term_children( $t->term_id, 'product_cat' ) as $child ) {
+			wp_delete_term( (int) $child, 'product_cat' );
+		}
+		wp_delete_term( $t->term_id, 'product_cat' );
+	}
+	foreach ( [ 'herreparfume', 'hudpleje-til-maend' ] as $slug ) {
+		if ( $t = get_term_by( 'slug', $slug, 'product_cat' ) ) {
+			wp_delete_term( $t->term_id, 'product_cat' );
+		}
+	}
+	delete_transient( 'playform_menu' );
+}
 
 /**
  * Skjulte artikler (_pf_hidden, se content/legacy-posts.php) vises ikke i lister: Viden & guides, emnesider,
