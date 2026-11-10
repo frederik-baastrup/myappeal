@@ -13,6 +13,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Tjek sider
         env:
           DOMAIN: ${{ inputs.domain || 'myappeal.dk' }}
@@ -32,3 +33,10 @@ jobs:
           echo "--- robots.txt"; curl -s "$B/robots.txt"
           echo "--- www → "; curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "https://www.$DOMAIN/"
           echo "--- http → "; curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "http://$DOMAIN/"
+          echo "--- artikler (REST)"; curl -s --max-time 60 "$B/wp-json/wp/v2/posts?per_page=100&_fields=slug" | grep -o '"slug":"[^"]*"' | sed 's/"slug":"//;s/"$//' | sort | tee posts.txt | wc -l
+          echo "--- købsguides: valg på lager / alternativ / udgået"
+          for g in $(ls wp-content/themes/playform/content/best 2>/dev/null | sed 's/\.php$//'); do
+            curl -s --max-time 60 "$B/$g/" -o g.html
+            echo "/$g/ valg=$(grep -o 'id="valg-[0-9]*"' g.html | sort -u | wc -l) gaa-til-butik=$(grep -o 'Gå til butik' g.html | wc -l) alternativ=$(grep -o 'Alternativ til' g.html | wc -l) ikke-lager=$(grep -o 'Ikke på lager' g.html | wc -l)"
+          done
+          echo "--- gamle adresser"; for s in $(cat wp-content/themes/playform/content/old-urls.txt 2>/dev/null); do echo "$s → $(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 30 "$B$s")"; done
