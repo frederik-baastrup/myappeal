@@ -129,14 +129,13 @@ function playform_category_thumb( string $slug ): string {
  * En kategori kan angives som [ slug, visningsnavn ], fx når en underkategori står for sig selv.
  */
 function playform_menu_spec(): array {
-	// 8 punkter i topmenuen. Solcreme ligger under Hudpleje, negle under Makeup og hårfjerning under Kropspleje.
+	// 7 punkter i topmenuen (kun til kvinder – ingen barbering, 10. nov. 2026). Solcreme ligger under Hudpleje, negle under Makeup og hårfjerning under Kropspleje.
 	return [
 		[ 'hudpleje', [ 'hudpleje', 'solcreme' ] ],
 		[ 'makeup', [ 'makeup', 'negle' ] ],
 		[ 'parfume', null ],
 		[ 'haarpleje', null ],
 		[ 'haarstyling', null ],
-		[ 'barbering', null ],
 		[ 'kropspleje', [ 'kropspleje', 'haarfjerning' ] ],
 		[ 'tandpleje', null ],
 	];
@@ -152,7 +151,6 @@ function playform_menu_labels(): array {
 		'parfume'      => 'Parfume',
 		'haarpleje'    => 'Hårpleje',
 		'haarstyling'  => 'Hårstyling',
-		'barbering'    => 'Barbering',
 		'kropspleje'   => 'Kropspleje',
 		'tandpleje'    => 'Tandpleje',
 		'solcreme'     => 'Solcreme & selvbruner',
@@ -178,23 +176,12 @@ function playform_menu_labels(): array {
 		'tandblegning'          => 'Tandblegning',
 		'tandpasta-og-tandtraad' => 'Tandpasta og tandtråd',
 		'boerne-tandboerste'    => 'Tandbørster til børn',
-		'barbermaskine'         => 'Barbermaskiner',
-		'skaegtrimmer'          => 'Skægtrimmere',
-		'haartrimmer'           => 'Hårtrimmere og hårklippere',
-		'multitrimmer'          => 'Multitrimmere',
-		'naesehaarstrimmer'     => 'Næse- og øretrimmere',
-		'barberskraber'         => 'Barberskrabere og blade',
-		'barberhoveder'         => 'Barberhoveder og tilbehør',
-		'barberskum'            => 'Barberskum og barbergel',
-		'aftershave'            => 'Aftershave',
-		'skaegpleje'            => 'Skægpleje',
 		'neglelak'              => 'Neglelak',
 		'gellak'                => 'Gellak',
 		'uv-lampe'              => 'UV-lamper til negle',
 		'neglepleje'            => 'Neglepleje',
 		'kunstige-negle'        => 'Kunstige negle',
 		'dameparfume'           => 'Dameparfume',
-		'herreparfume'          => 'Herreparfume',
 		'unisex-parfume'        => 'Unisex parfume',
 		'eau-de-parfum'         => 'Eau de parfum',
 		'eau-de-toilette'       => 'Eau de toilette',
@@ -246,7 +233,6 @@ function playform_menu_labels(): array {
 		'peeling'               => 'Peeling',
 		'retinol'               => 'Retinol',
 		'c-vitamin'             => 'C-vitamin til huden',
-		'hudpleje-til-maend'    => 'Hudpleje til mænd',
 		'skoenhedsapparater'    => 'Skønhedsapparater',
 	];
 	foreach ( playform_menu_spec() as [ $slug, $cats ] ) {
@@ -353,7 +339,7 @@ function playform_menu(): array {
 /** Populære kategorier, der vises i søgefeltet, før man har skrevet noget. */
 function playform_search_shortcuts(): array {
 	$out = [];
-	foreach ( [ 'glattejern', 'haartoerrer', 'el-tandboerste', 'ipl', 'skaegtrimmer', 'dameparfume', 'serum', 'foundation' ] as $slug ) {
+	foreach ( [ 'glattejern', 'haartoerrer', 'el-tandboerste', 'ipl', 'epilator', 'dameparfume', 'serum', 'foundation' ] as $slug ) {
 		$t = get_term_by( 'slug', $slug, 'product_cat' );
 		if ( $t && $t->count > 0 ) {
 			$out[] = [ $t->name, get_term_link( $t ) ];

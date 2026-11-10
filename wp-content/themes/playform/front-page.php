@@ -30,7 +30,7 @@ function playform_front_products( string $which ): array {
 			$base['tax_query'] = [ [ 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => array_column( playform_menu_spec(), 0 ) ] ];
 		} else {
 			// "Populære": stylingapparater, hårfjerning, eltandbørster og parfume (størst kurv), blandet hver dag.
-			$base['tax_query']    = [ [ 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => [ 'haarstyling', 'haarfjerning', 'tandpleje', 'parfume', 'barbering' ] ] ];
+			$base['tax_query']    = [ [ 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => [ 'haarstyling', 'haarfjerning', 'tandpleje', 'parfume' ] ] ];
 			$base['meta_query'][] = [ 'key' => '_price', 'value' => 400, 'compare' => '>=', 'type' => 'NUMERIC' ];
 			$base['orderby']      = 'rand';
 		}
@@ -48,7 +48,7 @@ function playform_front_categories(): array {
 	return [
 		'haarstyling'    => [ 'Hårstyling', 300 ],
 		'dameparfume'    => [ 'Dameparfume', 300 ],
-		'herreparfume'   => [ 'Herreparfume', 300 ],
+		'ipl'            => [ 'IPL', 500 ],
 		'el-tandboerste' => [ 'Eltandbørster', 300 ],
 		'serum'          => [ 'Serum til ansigtet', 150 ],
 	];
@@ -82,7 +82,7 @@ function playform_front_category_products( string $slug, int $min ): array {
 $hero = [
 	[ 'slug' => 'hudpleje', 'title' => 'Hudpleje', 'big' => true, 'subs' => [ [ 'Serum', [ 'sub' => 'serum' ] ], [ 'Dagcreme', [ 'sub' => 'dagcreme' ] ], [ 'Øjencreme', [ 'sub' => 'oejencreme' ] ], [ 'Retinol', [ 'sub' => 'retinol' ] ], [ 'Solcreme til ansigt', [ 'sub' => 'solcreme-til-ansigt' ] ] ] ],
 	[ 'slug' => 'haarstyling', 'title' => 'Hårstyling', 'subs' => [ [ 'Glattejern', [ 'sub' => 'glattejern' ] ], [ 'Hårtørrer', [ 'sub' => 'haartoerrer' ] ], [ 'Krøllejern', [ 'sub' => 'kroellejern' ] ] ] ],
-	[ 'slug' => 'parfume', 'title' => 'Parfume', 'subs' => [ [ 'Dameparfume', [ 'sub' => 'dameparfume' ] ], [ 'Herreparfume', [ 'sub' => 'herreparfume' ] ], [ 'Unisex', [ 'sub' => 'unisex-parfume' ] ] ] ],
+	[ 'slug' => 'parfume', 'title' => 'Parfume', 'subs' => [ [ 'Dameparfume', [ 'sub' => 'dameparfume' ] ], [ 'Eau de parfum', [ 'sub' => 'eau-de-parfum' ] ], [ 'Unisex', [ 'sub' => 'unisex-parfume' ] ] ] ],
 	[ 'slug' => 'makeup', 'title' => 'Makeup', 'subs' => [ [ 'Foundation', [ 'sub' => 'foundation' ] ], [ 'Mascara', [ 'sub' => 'mascara' ] ], [ 'Læbestift', [ 'sub' => 'laebestift' ] ] ] ],
 ];
 // Desktop: det store kort til venstre og tre kort til højre. Mobil: karrusel med 6 kategorier.

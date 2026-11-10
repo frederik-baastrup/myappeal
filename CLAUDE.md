@@ -1,6 +1,6 @@
 # Myappeal – projektnoter til Claude
 
-Myappeal (myappeal.dk) er en affiliate-side, der ligner en webshop. Den samler skønhed og personlig pleje – hudpleje, makeup, parfume, hårpleje, hårstyling-apparater, barbering, hårfjerning, tandpleje, negle, solcreme og kropspleje – fra de danske shops, vi samarbejder med, via Partner-ads-produktfeeds. Man køber ikke på siden: "Gå til butik" sender brugeren videre til shoppen via et affiliate-link.
+Myappeal (myappeal.dk) er en affiliate-side, der ligner en webshop. Den samler skønhed og personlig pleje **til kvinder** – hudpleje, makeup, parfume, hårpleje, hårstyling-apparater, hårfjerning, tandpleje, negle, solcreme og kropspleje – fra de danske shops, vi samarbejder med, via Partner-ads-produktfeeds. Man køber ikke på siden: "Gå til butik" sender brugeren videre til shoppen via et affiliate-link.
 
 Ejer: Frederik Baastrup (Mondae). Al tekst på siden er på dansk.
 
@@ -15,14 +15,15 @@ Kodebasen er klar og ligger i github.com/frederik-baastrup/myappeal (9. nov. 202
 ## Opbygning (det, der er særligt for Myappeal)
 
 - `Config.php`
-  - Shops (partnerid 14854): Proshop.dk og HvidevareShoppen.dk (godkendt via søstersitesne; kun skønhedskategorierne via `category_map`). Godkendt, men uden feed-link endnu (url tom = springes over): BilligParfume.dk, Well.dk, Made4men, Helsebixen.dk – indsæt `&bannerid=…&feedid=…`.
+  - Shops (partnerid 14854): Proshop.dk og HvidevareShoppen.dk (godkendt via søstersitesne; kun skønhedskategorierne via `category_map`). Godkendt, men uden feed-link endnu (url tom = springes over): BilligParfume.dk, Well.dk, Helsebixen.dk – indsæt `&bannerid=…&feedid=…`.
   - `category_map` med `'?<slug>'` (ny 9. nov. 2026, kun i Myappeals `Classifier`): vores regler placerer varen; kan de ikke, lander den i `<slug>` (butikkens kategori er sikker, fx Proshops "Parfume og dufte", hvor navnet ofte kun er mærke og duftnavn). `'?'` = kun vores regler.
   - `skip_uncategorized()` = true.
-  - Kategorier (rækkefølgen betyder noget – apparater før pleje, tandpleje før barbering, makeup og solcreme før hud-/kropspleje, hår- og kropspleje før hudpleje): `haarstyling`, `haarfjerning`, `tandpleje`, `barbering`, `negle`, `parfume`, `makeup`, `solcreme`, `haarpleje`, `kropspleje`, `hudpleje` – med mange underkategorier.
+  - Kategorier (rækkefølgen betyder noget – apparater før pleje, tandpleje før barbering, makeup og solcreme før hud-/kropspleje, hår- og kropspleje før hudpleje): `haarstyling`, `haarfjerning`, `tandpleje`, `negle`, `parfume`, `makeup`, `solcreme`, `haarpleje`, `kropspleje`, `hudpleje` – med mange underkategorier.
   - Udelukket: kosttilskud, medicinsk udstyr (blodtryk, termometre …), smykker/organizere, dyreprodukter, opladere/kabler, havemaskiner.
   - Testet på Proshop- og HvidevareShoppen-feedsne 9. nov. 2026: ca. 12.700 produkter (parfume 3.500, hudpleje 2.700, makeup 2.650, hårpleje 1.200, kropspleje 900, barbering 600, solcreme 450, tandpleje 320, negle 180, hårstyling 110, hårfjerning 70).
   - `dev/test-classifier.php` tester reglerne uden WordPress.
-- `inc/navigation.php` – topmenuen med 8 punkter: Hudpleje (+ Solcreme), Makeup (+ Negle), Parfume, Hårpleje, Hårstyling, Barbering, Kropspleje (+ Hårfjerning), Tandpleje.
+- **Kun til kvinder** (ejeren 10. nov. 2026): ingen barbering, herreparfume eller hudpleje til mænd. `Config::exclude()` holder herreprodukter ude (for men, homme, herre, skæg, aftershave, barbermaskine …); Made4men er fjernet.
+- `inc/navigation.php` – topmenuen med 7 punkter: Hudpleje (+ Solcreme), Makeup (+ Negle), Parfume, Hårpleje, Hårstyling, Kropspleje (+ Hårfjerning), Tandpleje.
 - `front-page.php` – kategorikort (hudpleje stort, hårstyling, parfume, makeup) og sektioner (hårstyling, dame-/herreparfume, eltandbørster, serum).
 - `content/category-texts.php`, `content/method.php`, `content/campaign-seo.php`, `inc/campaigns.php` – tekster skrevet til skønhed. Ingen sundhedsløfter.
 - `content/product-texts.php` og `content/best/` er tomme.

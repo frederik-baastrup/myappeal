@@ -3,7 +3,7 @@ namespace Playform\Feeds;
 
 /**
  * Al opsætning for nichen ét sted: sitets navn, shops, kategoritræ, sorteringsregler og filtre.
- * Myappeal (skønhed og personlig pleje). Samme kode som Kitzhen, Fitbase, Pizzalicious, Outdoorland og Koffee;
+ * Myappeal (skønhed og personlig pleje – kun til kvinder). Samme kode som Kitzhen, Fitbase, Pizzalicious, Outdoorland og Koffee;
  * kun denne fil er særlig for nichen.
  */
 final class Config {
@@ -41,7 +41,6 @@ final class Config {
 		$defaults = [
 			'billigparfume'    => [ 'name' => 'BilligParfume.dk', 'url' => '' ],
 			'well'             => [ 'name' => 'Well.dk', 'url' => '' ],
-			'made4men'         => [ 'name' => 'Made4men', 'url' => '' ],
 			'helsebixen'       => [ 'name' => 'Helsebixen.dk', 'url' => '' ],
 			'proshop'          => [ 'name' => 'Proshop.dk', 'url' => "$base&bannerid=67757&feedid=1399", 'category_map' => [
 				'parfume og dufte'      => '?parfume',
@@ -53,9 +52,9 @@ final class Config {
 				'kropspleje'            => '?kropspleje',
 				'anden personlig pleje' => '?',
 				'eltandboerste'         => '?tandpleje',
-				'barbermaskine'         => '?barbering',
-				'barbergrej'            => '?barbering',
-				'haartrimmer'           => '?barbering',
+				'barbermaskine'         => '?',
+				'barbergrej'            => '?',
+				'haartrimmer'           => '?',
 				'epilatoripl'           => '?haarfjerning',
 				'glattejern'            => '?haarstyling',
 				'kroellejern'           => '?haarstyling',
@@ -67,12 +66,12 @@ final class Config {
 				'velvære > hårpleje > krøllejern'                   => '?haarstyling',
 				'velvære > hårpleje > hårtørrer'                    => '?haarstyling',
 				'velvære > hårpleje > fladjern'                     => '?haarstyling',
-				'velvære > barbering/trimning'                      => '?barbering',
-				'velvære > barbering/trimning > barbermaskiner'     => '?barbering',
-				'velvære > barbering/trimning > hår og skægtrimmer' => '?barbering',
-				'velvære > barbering/trimning > øre og næsetrimmer' => '?barbering',
-				'velvære > barbering/trimning > folie og skær til barbermaskine' => '?barbering',
-				'velvære > barbering/trimning > rensning'           => '?barbering',
+				'velvære > barbering/trimning'                      => '?',
+				'velvære > barbering/trimning > barbermaskiner'     => '?',
+				'velvære > barbering/trimning > hår og skægtrimmer' => '?',
+				'velvære > barbering/trimning > øre og næsetrimmer' => '?',
+				'velvære > barbering/trimning > folie og skær til barbermaskine' => '?',
+				'velvære > barbering/trimning > rensning'           => '?',
 				'velvære > skønhed og helse > tandpleje'            => '?tandpleje',
 				'velvære > skønhed og helse'                        => '?',
 			] ],
@@ -93,7 +92,6 @@ final class Config {
 			'haarstyling'  => [ 'name' => 'Hårstyling', 'match' => 'glattejern|fladjern|straightener|krøllejern|krølle ?jern|krøllestav|krøllejern|curling ?(iron|wand|tong)|\bcurler|bølgejern|crimp|hårtørrer|hår ?tørrer|føntørrer|\bføn\b|hair ?dryer|hårføn|varmluftsbørste|hot ?air ?(brush|styler)|air ?wrap|airwrap|air ?styler|multistyler|multi ?styler|glattebørste|straight(ening)? ?brush|volumi[sz]er|hair ?styler|varmeruller|hot ?rollers?|diffuser', 'not' => 'beard|skæg|hood|hætte|stativ|holder til|vægbeslag|spray|creme|cream|olie|oil|serum|duft|\d+ ?ml\b|eyelash|vippe|\blash' ],
 			'haarfjerning' => [ 'name' => 'Hårfjerning', 'match' => 'epilator|epilering|lysepilator|\bipl\b|lumea|silk-?expert|ladyshave|lady ?shaver|bikini ?trimmer|bikinitrimmer|venus|voksstrimler|voks ?strips|wax ?(strips|pearls|beans|warmer|heater)|voksvarmer|sukkervoks|varm voks|hårfjerningsvoks|hårfjerning|hårfjerner|hair ?remov|depilat|veet', 'not' => 'næse|nose|øre\b|ear\b|shaving heads' ],
 			'tandpleje'    => [ 'name' => 'Tandpleje', 'match' => 'tandbørste|tand ?børste|toothbrush|sonicare|børstehoved|brush ?heads?|tandtråd|\bfloss|flosser|mundskyl|munddouche|tandpasta|toothpaste|tandblegning|teeth ?whitening|tungeskraber|interdental|mellemrumsbørste|tandstik|bideskinne', 'not' => 'hund|kat\b|\bpet\b|toilet|wc' ],
-			'barbering'    => [ 'name' => 'Barbering & skæg', 'match' => 'barbermaskine|barber ?maskine|shaver|barberhoved|shaving|skærhoved|oneblade|skægtrimmer|skæg ?trimmer|beard|skæg|hårtrimmer|hår ?trimmer|hårklipper|hår ?klipper|hair ?clipper|clipper|trimmer|body ?groom|multigroom|grooming|næsehår|razor|skraber|barberblad|barber ?blad|\bblades?\b|barberskum|barbergel|barbersæbe|barberkost|barber ?børste|aftershave|after ?shave|pre ?shave|cleaning ?cartridge|rensevæske|shavercare|combipack|barber', 'not' => 'græs|hæk|grass|hedge|kæledyr|hund|\bpet\b|negle|nail|frisørkappe' ],
 			'negle'        => [ 'name' => 'Negle', 'match' => 'neglelak|negle ?lak|nail ?polish|nail ?lacquer|gellak|gel ?lak|gel ?polish|neglefil|negle ?fil|nail ?file|neglebånd|cuticle|neglesaks|negleklipper|nail ?clipper|neglelampe|nail ?lamp|uv[ /-]?(led ?)?lampe|top ?coat|base ?coat|negleolie|neglepleje|negleforstærker|neglepynt|kunstige negle|press ?on|negle\b|nails?\b|manicure|neglebørste', 'not' => 'hånd- og negle|hånd og negle|hand ?(&|and|og) ?nail|nail ?cream|hand ?cream' ],
 			'parfume'      => [ 'name' => 'Parfume', 'match' => 'eau de (parfum|toilette|cologne)|\bedp\b|\bedt\b|\bedc\b|parfume|parfum\b|perfume|cologne|body ?mist|hair ?mist|duftspray|extrait|fragrance|parfumesæt|duftsæt', 'not' => '\bdeo|deodorant|anti-?perspirant|shower|brusegel|body ?lotion|bodylotion|lotion|sæbe|soap|after ?shave|aftershave|parfumefri|uden parfume|fragrance ?free|duftlys|\blys\b|diffuser|\bbil\b|vaskemiddel|skyllemiddel|duftpinde|creme|cream' ],
 			'makeup'       => [ 'name' => 'Makeup', 'match' => 'make-?up|foundation|concealer|mascara|eye ?liner|eyeliner|kajal|læbestift|lipstick|lip ?gloss|lipgloss|lip ?liner|lip ?(balm|oil|tint|stain|butter)|læbepomade|læbe|rouge|blush|bronzer|highlighter|contour|pudder|powder|primer|setting ?spray|fixing ?spray|øjenskygge|eye ?shadow|eyeshadow|shadow ?stick|cream ?shadow|eye ?pencil|cheek|palette|\bbb ?cream|\bcc ?cream|skin ?tint|cushion|bryn|brow|vipper|vippe|lashes|\blash|makeupbørste|kabuki|beauty ?blender|makeupsvamp|sminkesvamp|spejl|mirror', 'not' => 'remover|fjerner|\brens|cleans|micellar|tørshampoo|dry ?shampoo|dust|volumish|hår|hair|spejlskab|bil\b|serum' ],
@@ -135,18 +133,6 @@ final class Config {
 				'tandpasta-og-tandtraad' => [ 'name' => 'Tandpasta og tandtråd', 'match' => 'tandpasta|toothpaste|tandtråd|\bfloss\b|mundskyl|interdental|mellemrumsbørste|tandstik', 'not' => 'flosser' ],
 				'boerne-tandboerste'  => [ 'name' => 'Tandbørste til børn', 'match' => 'kids|junior|børn|frozen|spider|disney|\d+\+', 'not' => 'hoveder|heads?\b|refill' ],
 			],
-			'barbering' => [
-				'barbermaskine'      => [ 'name' => 'Barbermaskine', 'match' => 'barbermaskine|barber ?maskine|shaver|series \d|s\d{4}|oneblade(?!.*(blade|replacement))', 'not' => 'hoved|head|blade|replacement|cartridge|rens|clean|folie|skær|combipack|tilbehør|ladyshave|lady' ],
-				'skaegtrimmer'       => [ 'name' => 'Skægtrimmer', 'match' => 'skægtrimmer|skæg ?trimmer|beard ?trimmer|skæg|beard|stubble', 'not' => 'olie|oil|balm|balsam|voks|wax|shampoo|glattebørste|straightener' ],
-				'haartrimmer'        => [ 'name' => 'Hårtrimmer og hårklipper', 'match' => 'hårtrimmer|hår ?trimmer|hårklipper|hår ?klipper|hair ?(clipper|cutter|trimmer)|clipper|head ?shaver' ],
-				'multitrimmer'       => [ 'name' => 'Multitrimmer og bodygroom', 'match' => 'multigroom|multi ?trimmer|multitrimmer|body ?groom|bodytrimmer|body ?trimmer|grooming ?kit|\d+-i-1' ],
-				'naesehaarstrimmer'  => [ 'name' => 'Næse- og øretrimmer', 'match' => 'næse|nose|øre\b|ear\b|bryn|eyebrow' ],
-				'barberskraber'      => [ 'name' => 'Barberskraber og barberblade', 'match' => 'skraber|razor|barberblad|barber ?blad|\bblades?\b|safety|shavette', 'not' => 'oneblade|replacement' ],
-				'barberhoveder'      => [ 'name' => 'Barberhoveder og tilbehør', 'match' => 'barberhoved|shaving ?heads?|skærhoved|combipack|replacement|udskiftelig|cleaning ?cartridge|shavercare|rensevæske|folie|skær\b|\bcc\d' ],
-				'barberskum'         => [ 'name' => 'Barberskum og barbergel', 'match' => 'barberskum|barbergel|shav(e|ing) ?(gel|foam|cream|soap|oil)|barbersæbe|pre ?shave|barberolie' ],
-				'aftershave'         => [ 'name' => 'Aftershave', 'match' => 'after ?shave|aftershave' ],
-				'skaegpleje'         => [ 'name' => 'Skægpleje', 'match' => '(skæg|beard) ?(olie|oil|balm|balsam|voks|wax|shampoo|conditioner|børste|brush|kam|comb)', 'not' => 'trimmer' ],
-			],
 			'negle' => [
 				'neglelak'       => [ 'name' => 'Neglelak', 'match' => 'neglelak|negle ?lak|nail ?(polish|lacquer|colou?r)|top ?coat|base ?coat', 'not' => 'gel|fjerner|remover' ],
 				'gellak'         => [ 'name' => 'Gellak og gelenegle', 'match' => 'gellak|gel ?lak|gel ?polish|gelenegle|gel\b|builder|polygel|acryl' ],
@@ -156,7 +142,6 @@ final class Config {
 			],
 			'parfume' => [
 				'dameparfume'    => [ 'name' => 'Dameparfume', 'match' => 'women|woman|femme|\bher\b|for kvinder|dame|lady|girl|\bmiss\b|\bshe\b|donna', 'desc' => 'dameparfume|til kvinder|feminin|dufte til hende', 'not' => 'homme|\bmen\b|\bman\b|uomo|\bhim\b|herre' ],
-				'herreparfume'   => [ 'name' => 'Herreparfume', 'match' => 'homme|\bmen\b|\bman\b|uomo|\bhim\b|herre|\bboy\b|\bmale\b|for him', 'desc' => 'herreparfume|til mænd|maskulin|dufte til ham', 'not' => 'femme|women|woman|\bher\b|dame' ],
 				'unisex-parfume' => [ 'name' => 'Unisex parfume', 'match' => 'unisex', 'desc' => 'unisex' ],
 				'eau-de-parfum'  => [ 'name' => 'Eau de parfum', 'match' => 'eau de parfum|\bedp\b|parfum intense' ],
 				'eau-de-toilette' => [ 'name' => 'Eau de toilette', 'match' => 'eau de toilette|\bedt\b' ],
@@ -218,7 +203,6 @@ final class Config {
 				'peeling'         => [ 'name' => 'Peeling og eksfoliering', 'match' => 'peeling|exfoliat|scrub|\baha\b|\bbha\b|\bpha\b|glycol|salicyl|enzym' ],
 				'retinol'         => [ 'name' => 'Retinol', 'match' => 'retinol|retinal|retinoid|bakuchiol' ],
 				'c-vitamin'       => [ 'name' => 'C-vitamin til huden', 'match' => 'vitamin ?c|c-vitamin|vita ?c|ascorbic' ],
-				'hudpleje-til-maend' => [ 'name' => 'Hudpleje til mænd', 'match' => '\bmen\b|homme|for men|\bman\b|herre' ],
 				'skoenhedsapparater' => [ 'name' => 'Skønhedsapparater', 'match' => 'rensebørste|ansigtsbørste|led[ -]?(mask|maske)|derma ?roller|gua ?sha|ansigtsrulle|jade ?roller|microcurrent|ultralyd|sonic|apparat|device' ],
 			],
 		];
@@ -230,7 +214,7 @@ final class Config {
 			'olaplex' => 'haarpleje', 'k18' => 'haarpleje', 'moroccanoil' => 'haarpleje', 'idhair' => 'haarpleje', 'kérastase' => 'haarpleje',
 			'wella' => 'haarpleje', 'milk shake' => 'haarpleje', 'redken' => 'haarpleje', 'davines' => 'haarpleje', 'maria nila' => 'haarpleje',
 			'ghd' => 'haarstyling', 'dyson' => 'haarstyling', 'babyliss' => 'haarstyling', 'gillian jones' => 'makeup',
-			'oral-b' => 'tandpleje', 'gillette' => 'barbering',
+			'oral-b' => 'tandpleje',
 		];
 	}
 
@@ -244,6 +228,8 @@ final class Config {
 			'\bhund|hunde|\bkat\b|katte|\bpet\b|hest|kæledyr',
 			'strømforsyning|oplader\b|charger|adapter|kabel\b|ledning',
 			'frisørkappe|sprayflaske|græstrimmer|hækkeklipper|plæneklipper',
+			// Myappeal er kun til kvinder (ejeren 10. nov. 2026): intet til mænd – herreparfume, barbering, skæg og herrepleje.
+			'for men|for him|pour homme|\\bhomme\\b|\\bmen\\b|\\bman\\b|\\bmens\\b|\\bherre(?!ra)|mænd|\\buomo\\b|beard|skæg|aftershave|after ?shave|barbermaskine|barber ?maskine|barberskum|barbergel|barbersæbe|barberkost|barberblad|shaving|(?<!lady )shaver|\\bshave\\b|skægtrimmer|hårtrimmer|hårklipper|hair ?clipper|grooming|body ?groom|multigroom|oneblade|næsetrimmer|næsehår|nose ?(trimmer|hair)|made4men',
 		];
 	}
 
@@ -265,7 +251,7 @@ final class Config {
 	}
 
 	public static function accessory_target(): string {
-		return 'barbering';
+		return 'haarstyling';
 	}
 
 	/**

@@ -245,7 +245,7 @@ function playform_run_upgrades(): void {
 	if ( class_exists( '\Playform\Feeds\Sales' ) ) {
 		\Playform\Feeds\Sales::refresh_all( current_time( 'Y-m-d' ) ); // kontrollerede førpriser
 	}
-	foreach ( [ 'playform_front_popular', 'playform_front_deals', 'playform_front_new', 'playform_price_ranges', 'playform_front_cat_haarstyling', 'playform_front_cat_dameparfume', 'playform_front_cat_herreparfume', 'playform_front_cat_el-tandboerste', 'playform_front_cat_serum' ] as $t ) {
+	foreach ( [ 'playform_front_popular', 'playform_front_deals', 'playform_front_new', 'playform_price_ranges', 'playform_front_cat_haarstyling', 'playform_front_cat_dameparfume', 'playform_front_cat_ipl', 'playform_front_cat_el-tandboerste', 'playform_front_cat_serum' ] as $t ) {
 		delete_transient( $t );
 	}
 	// Indlæg (guides) ligger direkte under roden: /bedste-gasgrill/ (samme adresser som det gamle site).

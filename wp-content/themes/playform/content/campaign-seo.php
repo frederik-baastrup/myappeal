@@ -14,13 +14,13 @@ return [
 <p>Et godt stylingapparat er ofte det største enkeltkøb i badeværelset, så her kan en lavere pris mærkes. Under {cat:haarstyling|hårstyling} finder du {cat:haartoerrer|hårtørrere}, {cat:glattejern|glattejern} og {cat:kroellejern|krøllejern}. Vil du have flere funktioner i ét apparat, så se på {cat:multistyler|multistylere} og {cat:varmluftsboerste|varmluftsbørster}.</p>
 
 <h3>Tilbud på parfume og makeup</h3>
-<p>Parfume er en klassisk julegave, og mange køber den allerede i november. Kig under {cat:dameparfume|dameparfume}, {cat:herreparfume|herreparfume} og {cat:parfume-gavesaet|gavesæt med parfume}. Til makeuptasken finder du {cat:foundation|foundation}, {cat:mascara|mascara} og {cat:laebestift|læbestift og lipgloss} under {cat:makeup|makeup}.</p>
+<p>Parfume er en klassisk julegave, og mange køber den allerede i november. Kig under {cat:dameparfume|dameparfume}, {cat:unisex-parfume|unisex-dufte} og {cat:parfume-gavesaet|gavesæt med parfume}. Til makeuptasken finder du {cat:foundation|foundation}, {cat:mascara|mascara} og {cat:laebestift|læbestift og lipgloss} under {cat:makeup|makeup}.</p>
 
 <h3>Hudpleje og hårpleje</h3>
 <p>Fylder du op på dine faste plejeprodukter, kan det betale sig at gøre det, mens butikkerne har tilbud. Se {cat:dagcreme|dagcreme}, {cat:serum|serum} og {cat:ansigtsrens|ansigtsrens} under {cat:hudpleje|hudpleje}. Til håret er der {cat:shampoo|shampoo}, {cat:balsam|balsam} og {cat:haarkur|hårkure} under {cat:haarpleje|hårpleje}.</p>
 
 <h3>Barbering, tandpleje og hårfjerning</h3>
-<p>Apparaterne til den daglige pleje er nyttige gaver, som bliver brugt. Find {cat:barbermaskine|barbermaskiner} og {cat:skaegtrimmer|skægtrimmere} under {cat:barbering|barbering og skæg}, {cat:el-tandboerste|eltandbørster} og {cat:vandflosser|vandflossere} under {cat:tandpleje|tandpleje} og {cat:ipl|IPL} og {cat:epilator|epilatorer} under {cat:haarfjerning|hårfjerning}. Glem heller ikke {cat:negle|negle} og {cat:kropspleje|kropspleje}.</p>
+<p>Apparaterne til den daglige pleje er nyttige gaver, som bliver brugt. Find {cat:glattejern|glattejern} og {cat:haartoerrer|hårtørrere} under {cat:haarstyling|hårstyling}, {cat:el-tandboerste|eltandbørster} og {cat:vandflosser|vandflossere} under {cat:tandpleje|tandpleje} og {cat:ipl|IPL} og {cat:epilator|epilatorer} under {cat:haarfjerning|hårfjerning}. Glem heller ikke {cat:negle|negle} og {cat:kropspleje|kropspleje}.</p>
 
 <h3>Før du lægger i kurven</h3>
 <ul>

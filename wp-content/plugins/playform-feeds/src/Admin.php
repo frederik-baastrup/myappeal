@@ -25,7 +25,7 @@ final class Admin {
 		delete_transient( 'playform_front_popular' );
 		delete_transient( 'playform_front_deals' );
 		delete_transient( 'playform_front_new' );
-		foreach ( [ 'haarstyling', 'dameparfume', 'herreparfume', 'el-tandboerste', 'serum' ] as $c ) {
+		foreach ( [ 'haarstyling', 'dameparfume', 'ipl', 'el-tandboerste', 'serum' ] as $c ) {
 			delete_transient( 'playform_front_cat_' . $c ); // forsidens kategori-sektioner
 		}
 	}
