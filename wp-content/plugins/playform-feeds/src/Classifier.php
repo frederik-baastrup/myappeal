@@ -21,7 +21,21 @@ final class Classifier {
 		$shop = Config::shops()[ $offer['shop'] ] ?? [];
 		$map  = $shop['category_map'] ?? null;
 		if ( is_array( $map ) ) {
-			$mapped = $map[ $cat ] ?? 'exclude';
+			$mapped = $map[ $cat ] ?? null;
+			// 'map_parents' (kun Myappeal, 10. nov. 2026): butikker med dybe stier ("Personlig Pleje > Ansigtspleje > Serum")
+			// slår den nærmeste forælder op, så én nøgle dækker hele grenen. Ukendte grene er stadig 'exclude'.
+			if ( null === $mapped && ! empty( $shop['map_parents'] ) ) {
+				$path = $cat;
+				while ( null === $mapped && false !== ( $pos = strrpos( $path, ' > ' ) ) ) {
+					$path   = substr( $path, 0, $pos );
+					$mapped = $map[ $path ] ?? null;
+				}
+			}
+			// Udelukkelserne testes på navnet – og på mærke + navn, når navnet ikke selv nævner mærket
+			// (fx Beova: "Eros Eau De Toilette" fra Versace er en herreduft).
+			$excl_text = ( $brand !== '' && ! str_contains( $name, $brand ) ) ? "$brand $name" : $name;
+			// '*': standard for butikskategorier, der ikke er nævnt (fx Glow Studio, hvis kategorier er lange tag-lister).
+			$mapped = $mapped ?? ( $map['*'] ?? 'exclude' );
 			// '?': butikskategorien er med, men kun vores egne regler (inkl. udelukkelser) afgør placeringen.
 			// '?:<regex>': som '?', men navnet skal også matche regex (fx kun bærbare grill fra en stor grillkategori).
 			if ( is_string( $mapped ) && str_starts_with( $mapped, '?:' ) ) {
@@ -30,13 +44,21 @@ final class Classifier {
 				}
 				$mapped = '?';
 			}
+			// '!<slug>' (kun Myappeal, 10. nov. 2026): butikkens kategori er sikker (fx "Hårkur" – hårmasker og -serum ville
+			// ellers ende i hudpleje). Udelukkelserne gælder; vores regler må kun flytte apparater (Config::appliance_categories()).
+			if ( is_string( $mapped ) && str_starts_with( $mapped, '!' ) ) {
+				if ( self::excluded( $excl_text ) ) {
+					return 'exclude';
+				}
+				$found = self::first_match( $match_name );
+				$apps  = method_exists( Config::class, 'appliance_categories' ) ? Config::appliance_categories() : [];
+				return ( $found && in_array( $found, $apps, true ) ) ? $found : substr( $mapped, 1 );
+			}
 			// '?<slug>': som '?', men varer, vores regler ikke kan placere, lander i <slug> (butikkens kategori er sikker,
 			// fx Proshops "Parfume og dufte", hvor navnet ofte kun er mærke og duftnavn).
 			if ( is_string( $mapped ) && str_starts_with( $mapped, '?' ) ) {
-				foreach ( Config::exclude() as $pattern ) {
-					if ( self::m( $pattern, $name ) ) {
-						return 'exclude';
-					}
+				if ( self::excluded( $excl_text ) ) {
+					return 'exclude';
 				}
 				$fallback = strlen( $mapped ) > 1 ? substr( $mapped, 1 ) : 'exclude';
 				$by_brand = ( $brand !== '' && method_exists( Config::class, 'brand_categories' ) ) ? ( Config::brand_categories()[ $brand ] ?? null ) : null;
@@ -71,6 +93,15 @@ final class Classifier {
 			return 'exclude'; // fx Outdoorland: kun varer, der passer i en kategori, kommer med
 		}
 		return $found ?: Config::uncategorized_slug();
+	}
+
+	private static function excluded( string $text ): bool {
+		foreach ( Config::exclude() as $pattern ) {
+			if ( self::m( $pattern, $text ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static function first_match( string $text ): ?string {

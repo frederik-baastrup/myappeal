@@ -23,6 +23,12 @@ final class Normalizer {
 	}
 
 	/** Retter mærket forrest i produktnavnet, så det staves som mærket ("Big green egg Bagesten" → "Big Green Egg Bagesten"). */
+	/** Butikkernes testpåstande i navnet ("Ladyshaver - Bedst i test") – vi påstår aldrig test. */
+	public static function strip_claims( string $name ): string {
+		$name = preg_replace( '/\s*[-–|,]?\s*\(?\b(bedst i test|testvinder|vinder af test)\b\)?\s*[-–|,]?\s*/iu', ' ', $name );
+		return trim( preg_replace( '/\s+/', ' ', $name ), " -–|," );
+	}
+
 	public static function name_brand_case( string $name, string $brand ): string {
 		$fixed = self::brand_case( $brand );
 		$len   = mb_strlen( $brand );
@@ -41,7 +47,7 @@ final class Normalizer {
 			'shop_name'       => $shop_name,
 			'shop_product_id' => (string) ( $row['produktid'] ?? '' ),
 			'ean'             => self::ean( $row['ean'] ?? '' ),
-			'name'            => self::name_brand_case( self::clean_text( $row['produktnavn'] ?? '' ), $brand_raw ),
+			'name'            => self::name_brand_case( self::strip_claims( self::clean_text( $row['produktnavn'] ?? '' ) ), $brand_raw ),
 			'brand'           => self::brand_case( $brand_raw ),
 			'shop_category'   => self::clean_text( $row['kategorinavn'] ?? '' ),
 			'description'     => self::clean_text( $row['beskrivelse'] ?? '' ),
