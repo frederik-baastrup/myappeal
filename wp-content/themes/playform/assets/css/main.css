@@ -1534,3 +1534,14 @@ ul.guide__facts { display: inline-flex; flex-wrap: wrap; align-items: center; ma
 	.mm__cat { white-space: nowrap; }
 	.mm__col a.mm__more { white-space: nowrap; }
 }
+
+/* Lys topbar som på Outdoorland og Pizzalicious (ejeren 10. nov. 2026). */
+.topbar { background: #FBF1F6; color: #6E5F67; border-bottom: 1px solid #F2E2EA; }
+.topbar b { color: #111; }
+.topbar svg { color: #111; }
+.topbar__usp li + li { border-left-color: rgba(17, 17, 17, .14); }
+.topbar__ad { color: #6E5F67; }
+.topbar__ad:hover { color: #111; }
+.topbar__tag { border-color: rgba(17, 17, 17, .3); color: #111; }
+.topbar__mob, .topbar__mob a { color: #6E5F67; }
+.topbar__mob .topbar__tag:hover { color: #111; }
