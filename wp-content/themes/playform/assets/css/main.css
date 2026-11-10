@@ -1545,3 +1545,7 @@ ul.guide__facts { display: inline-flex; flex-wrap: wrap; align-items: center; ma
 .topbar__tag { border-color: rgba(17, 17, 17, .3); color: #111; }
 .topbar__mob, .topbar__mob a { color: #6E5F67; }
 .topbar__mob .topbar__tag:hover { color: #111; }
+
+/* Myappeal: pink understregning i menuen ved hover/aktiv (ejeren 10. nov. 2026). Teksten forbliver sort. */
+.mm__link::after { height: 3px; border-radius: 3px 3px 0 0; background: var(--accent); }
+.mm__link--sale::after { background: var(--sale); }
