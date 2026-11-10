@@ -18,6 +18,7 @@ jobs:
         env:
           DOMAIN: ${{ inputs.domain || 'myappeal.dk' }}
         run: |
+          set +e
           B="https://$DOMAIN"
           for p in / /hudpleje/ /haarstyling/ /haarstyling/glattejern/ /parfume/dameparfume/ /tandpleje/el-tandboerste/ /koebsguide/ /viden/ /robots.txt /wp-sitemap.xml /saadan-fungerer-det/; do
             out=$(curl -s -o body.html -w "%{http_code} %{redirect_url}" --max-time 60 "$B$p")
