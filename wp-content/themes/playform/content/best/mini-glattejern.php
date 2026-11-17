@@ -2,6 +2,7 @@
 /**
  * Omskrevet fra det gamle myappeal.dk (/mini-glattejern/, 2022). Ny tekst og nye produkter.
  * Kun 3 modeller: feedsne havde 9. nov. 2026 kun tre små rejse-glattejern med EAN på lager (Beurer HS20, Skinvibe Luna Mini, Mikamax Mini).
+ * 17. nov. 2026: Mikamax Mini var ikke på lager og er skiftet til HH Simonsen Pocket Straightener (to varianter i 'eans').
  * Skinvibe ligger i Proshops kategori "Haartoerrer" – den skal være med i Proshops category_map ('haartoerrer' => '?haarstyling').
  * Fakta om produkterne kommer kun fra butikkernes produktdata. Vi har ikke selv afprøvet produkterne.
  */
@@ -50,19 +51,20 @@ HTML,
 			'less'    => [ 'Dig, der vil holde budgettet helt nede' ],
 		],
 		[
-			'ean'     => '8721154050216',
-			'price'   => 129,
-			'name'    => 'Mikamax Mini USB-glattejern',
-			'role'    => 'Mindste budget',
+			'ean'     => '5713052006733',
+			'eans'    => [ '5713052006733', '5713052003725' ],
+			'price'   => 189,
+			'name'    => 'HH Simonsen Pocket Straightener',
+			'role'    => 'Bedst til den lille taske',
 			'reviews' => [],
-			'verdict' => 'Slankt og let USB-glattejern op til 190 °C, med rejseetui og USB-kabel i æsken.',
+			'verdict' => 'Ultralet glattejern i rejsestørrelse, der gør det nemt at lade det store jern blive hjemme.',
 			'why'     => <<<'HTML'
-<p>Mikamax Mini er det billige og enkle bud. Det får strøm via USB, så du kan sætte det i en powerbank, en computer eller en USB-oplader. Det er smart, når du er ude at rejse og ikke vil slæbe adaptere med.</p>
-<p>Jernet varmer op til 190 °C, og det slanke og lette design gør det nemt at have i en lille taske. Der følger et rejseetui med, så resten af tasken er beskyttet, og et USB-kabel, så du er klar fra start.</p>
-<p>Det er et godt valg som ekstra glattejern til gymnastiktasken eller som første mini-glattejern, hvis du vil finde ud af, om du får brug for det.</p>
+<p>HH Simonsen Pocket Straightener er bygget til at følge med dig. Det er et glattejern i rejsestørrelse, og det er ultralet, så det kan ligge i håndtasken, kufferten eller weekendtasken uden at fylde og veje til.</p>
+<p>Navnet siger det hele: Det er et lommejern til hurtige opfriskninger, når pandehåret har slået sig, eller spidserne skal rettes ind før middagen.</p>
+<p>Til gengæld er det ikke et jern til at glatte hele håret fra bunden. Det er en praktisk hjælp på farten, mens det store glattejern bliver derhjemme.</p>
 HTML,
-			'good'    => [ 'Gymnastiktasken', 'Strøm fra powerbank eller computer', 'Lille budget' ],
-			'less'    => [ 'Dig, der vil vælge mellem flere varmetrin' ],
+			'good'    => [ 'Håndtasken og kufferten', 'Hurtige opfriskninger af pandehår og spidser' ],
+			'less'    => [ 'Glatning af hele håret hver morgen' ],
 		],
 	],
 	'guide'    => <<<'HTML'

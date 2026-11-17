@@ -1,7 +1,7 @@
 <?php
 /**
  * Omskrevet fra det gamle myappeal.dk (/haarfjerner-til-ansigtet/, 2022). Ny tekst og nye produkter.
- * Kun 3 modeller: feedsne havde 9. nov. 2026 kun tre apparater på lager, der efter produktdata er beregnet til ansigtet (IPL med ansigtstilbehør, ansigtsepilator, trimmer med tilbehør til ansigtshår).
+ * Kun 2 modeller: 17. nov. 2026 var ansigtsepilatoren (Braun Face 810) og Maxgroom-trimmeren ikke på lager. Trimmeren er skiftet til Braun Face Hair Trimmer; der fandtes ingen ansigtsepilator på lager, så epilatorvalget er fjernet.
  * Fakta om produkterne kommer kun fra butikkernes produktdata. Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -10,19 +10,19 @@ return [
 	'slug'     => 'haarfjerner-til-ansigtet',
 	'date'     => '2022-06-23 10:00:00',
 	'keyword'  => 'hårfjerner til ansigtet',
-	'title'    => 'Hårfjerner til ansigtet: Vores bud på de 3 bedste',
-	'excerpt'  => 'Fine hår på overlæben, hagen eller kinderne kan fjernes med IPL, epilering eller trimning. Her er vores bud på de 3 bedste hårfjernere til ansigtet fra de butikker, vi samarbejder med.',
+	'title'    => 'Hårfjerner til ansigtet: Vores bud på de 2 bedste',
+	'excerpt'  => 'Fine hår på overlæben, hagen eller kinderne kan fjernes med IPL, epilering eller trimning. Her er vores bud på de 2 bedste hårfjernere til ansigtet fra de butikker, vi samarbejder med.',
 	'more_cat' => 'haarfjerning',
 	'intro'    => <<<'HTML'
 <p>Næsten alle har fine hår i ansigtet, og hos mange bliver de mere synlige med alderen. Det kan være dun på kinderne, der fanger foundation, et par mørke hår på hagen eller en skygge på overlæben. Det er helt normalt – men det er også helt i orden at ville have dem væk.</p>
-<p>Huden i ansigtet er tyndere og mere følsom end på benene, så det betaler sig at bruge et apparat, der er lavet til ansigtet. Der er tre veje: IPL, epilering og trimning. Herunder er vores bud på den bedste i hver kategori fra de butikker, vi samarbejder med, og nederst forklarer vi forskellen, så du kan vælge den metode, der passer til dig.</p>
+<p>Huden i ansigtet er tyndere og mere følsom end på benene, så det betaler sig at bruge et apparat, der er lavet til ansigtet. Der er tre veje: IPL, epilering og trimning. Herunder er vores bud på et apparat til IPL og et til trimning fra de butikker, vi samarbejder med, og nederst forklarer vi forskellen på alle tre metoder, så du kan vælge den, der passer til dig.</p>
 HTML,
 	'picks'    => [
 		[
 			'ean'     => '8720689016827',
 			'price'   => 4111,
 			'name'    => 'Philips Lumea IPL 9000 Series BRI955/00',
-			'role'    => 'Bedst til IPL',
+			'role'    => 'Bedst samlet',
 			'reviews' => [],
 			'verdict' => 'Ledningsfri IPL med SmartSkin-sensor og tre tilbehørsdele til krop, ansigt og præcision.',
 			'why'     => <<<'HTML'
@@ -34,33 +34,18 @@ HTML,
 			'less'    => [ 'Meget lyse, røde eller grå hår', 'Lille budget' ],
 		],
 		[
-			'ean'     => '4210201097358',
-			'price'   => 339,
-			'name'    => 'Braun Face 810',
-			'role'    => 'Bedst til epilering',
-			'reviews' => [],
-			'verdict' => 'Ansigtsepilator og rensebørste i ét apparat, der kan fjerne selv meget fine hår ved roden.',
-			'why'     => <<<'HTML'
-<p>Braun Face 810 er bygget til ansigtet fra start. Den epilerer præcist og kan fange de fineste hår, så du kan fjerne dun og enkelte hår ved roden. Det betyder, at der går længere tid, før de kommer igen, end hvis du trimmer.</p>
-<p>Apparatet har også en rensebørste, der renser huden nænsomt med små svingende bevægelser. Så får du to dele af din rutine i ét apparat: fjern hårene, og rens huden bagefter.</p>
-<p>Epilering kan prikke de første gange, især på overlæben. Mange oplever, at det bliver lettere med tiden. Start et sted, hvor huden ikke er alt for følsom.</p>
-HTML,
-			'good'    => [ 'Dun og fine hår', 'Overlæbe og hage', 'Dig, der også vil have en rensebørste' ],
-			'less'    => [ 'Dig med meget følsom hud' ],
-		],
-		[
-			'ean'     => '5907769388859',
-			'price'   => 199,
-			'name'    => 'Maxgroom LK-881 Multitrimmer',
+			'ean'     => '4210201313908',
+			'price'   => 249,
+			'name'    => 'Braun Face Hair Trimmer',
 			'role'    => 'Bedst til trimning',
 			'reviews' => [],
-			'verdict' => 'Multitrimmer med udskiftelige hoveder til både ansigt og krop og afrundede blade, der skåner huden.',
+			'verdict' => 'Trimmer fra Braun, der er lavet til hårene i ansigtet – det enkle og smertefri alternativ til IPL.',
 			'why'     => <<<'HTML'
-<p>Den skånsomste metode er at klippe hårene af ved huden i stedet for at trække dem ud. Maxgroom LK-881 er en trimmer med flere udskiftelige hoveder, så du kan vælge det, der passer til området – fra ansigtshår til de steder, der er svære at komme til.</p>
-<p>Bladene er afrundede, og det giver mere komfort og mindre risiko for at ridse huden. Det er godt nyt i ansigtet, hvor huden er tynd.</p>
-<p>Trimning gør ikke ondt og kan bruges, når du har travlt. Til gengæld vokser hårene hurtigere igen, så du skal gentage det oftere. Det er et godt og billigt sted at starte, før du overvejer epilering eller IPL.</p>
+<p>Vil du bare have dunet på kinderne eller et par hår på hagen væk uden at det gør ondt, er en trimmer det nemmeste sted at begynde. Braun Face Hair Trimmer er lavet til hår i ansigtet, så du kan bruge den på overlæbe, hage og kæbelinje i stedet for at tage et apparat til ben og krop i brug.</p>
+<p>En trimmer klipper hårene af tæt ved huden og trækker dem ikke ud. Derfor er den skånsom mod tynd og følsom hud, og du kan tage en hurtig tur foran spejlet, før du lægger makeup. Prisen er på et niveau, hvor du kan prøve metoden af uden at binde dig til et dyrt apparat.</p>
+<p>Ulempen er, at hårene kommer hurtigere igen end ved epilering eller IPL, så du skal gøre det oftere.</p>
 HTML,
-			'good'    => [ 'Smertefri og hurtig hårfjerning', 'Lille budget', 'Ansigt og krop med samme apparat' ],
+			'good'    => [ 'Smertefri hårfjerning', 'Lille budget' ],
 			'less'    => [ 'Dig, der vil have glat hud i flere uger' ],
 		],
 	],
