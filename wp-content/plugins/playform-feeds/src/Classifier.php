@@ -61,6 +61,14 @@ final class Classifier {
 					return 'exclude';
 				}
 				$fallback = strlen( $mapped ) > 1 ? substr( $mapped, 1 ) : 'exclude';
+				// '?<slug>:<regex>' (18. nov. 2026): reserven <slug> gælder kun, når navnet matcher regex
+				// (Lusso di Lusso: nicheparfumer hedder kun "Duftnavn - 100ml", men butikken sælger også diffusere og rumspray).
+				if ( str_contains( $fallback, ':' ) ) {
+					[ $fallback, $re ] = explode( ':', $fallback, 2 );
+					if ( ! self::m( $re, $name ) ) {
+						$fallback = 'exclude';
+					}
+				}
 				$by_brand = ( $brand !== '' && method_exists( Config::class, 'brand_categories' ) ) ? ( Config::brand_categories()[ $brand ] ?? null ) : null;
 				return self::first_match( $match_name ) ?: ( $by_brand ?: $fallback );
 			}

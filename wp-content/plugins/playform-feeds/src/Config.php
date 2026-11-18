@@ -336,6 +336,11 @@ final class Config {
 				'toner'       => '?hudpleje',
 				'ansigtsrens' => '?hudpleje',
 			] ],
+			'lussodilusso'     => [ 'name' => 'Lusso di Lusso', 'url' => "$base&bannerid=106601&feedid=3328", 'category_map' => [
+				// Mest nicheparfume (Laboratorio Olfattivo), hvis navne kun er "Duftnavn - 100ml". Diffusere, rumspray, duftlys,
+				// prøvesæt og herretrimmere kommer ikke med.
+				'*' => '?parfume:^(?!.*(diffuser|room ?spray|roomspray|duftlys|sample|håndsprit|voks|shower|lotion|soap|creme)).* - \d+ ?ml$',
+			] ],
 			'proshop'          => [ 'name' => 'Proshop.dk', 'url' => "$base&bannerid=67757&feedid=1399", 'category_map' => [
 				'parfume og dufte'      => '?parfume',
 				'ansigtspleje'          => '?hudpleje',
@@ -383,7 +388,7 @@ final class Config {
 	 */
 	public static function categories(): array {
 		return [
-			'haarstyling'  => [ 'name' => 'Hårstyling', 'match' => 'glattejern|fladjern|straightener|krøllejern|krølle ?jern|krøllestav|krøl+stav|krøllejern|curling ?(iron|wand|tong)|\bcurler|bølgejern|crimp|hårtørrer|hår ?tørrer|føntørrer|\bføn\b|hair ?dryer|hårføn|varmluftsbørste|hot ?air ?(brush|styler)|air ?wrap|airwrap|air ?styler|multistyler|multi ?styler|glattebørste|straight(ening)? ?brush|volumi[sz]er|hair ?styler|varmeruller|hot ?rollers?|diffuser', 'not' => 'beard|skæg|hood|hætte|stativ|holder til|vægbeslag|spray|creme|cream|olie|oil|serum|duft|\d+ ?ml\b|eyelash|vippe|\blash' ],
+			'haarstyling'  => [ 'name' => 'Hårstyling', 'match' => 'glattejern|fladjern|straightener|krøllejern|krølle ?jern|krøllestav|krøl+stav|krøllejern|curling ?(iron|wand|tong)|\bcurler|bølgejern|crimp|hårtørrer|hår ?tørrer|føntørrer?|\bføn\b|hair ?dryer|hårføn|varmluftsbørste|hot ?air ?(brush|styler)|air ?wrap|airwrap|air ?styler|multistyler|multi ?styler|glattebørste|straight(ening)? ?brush|volumi[sz]er|hair ?styler|varmeruller|hot ?rollers?|diffuser', 'not' => 'beard|skæg|hood|hætte|stativ|holder til|vægbeslag|spray|creme|cream|olie|oil|serum|duft|\d+ ?ml\b|eyelash|vippe|\blash' ],
 			'haarfjerning' => [ 'name' => 'Hårfjerning', 'match' => 'epilator|epilering|lysepilator|\bipl\b|lumea|silk-?expert|ladyshave|lady ?shaver|bikini ?trimmer|bikini-|intimtrimmer|bikinitrimmer|venus|voksstrimler|voks ?strips|wax ?(strips|pearls|beans|warmer|heater)|voksvarmer|sukkervoks|varm voks|hårfjerningsvoks|hårfjerning|hårfjerner|hair ?remov|depilat|veet', 'not' => 'næse|nose|øre\b|ear\b|shaving heads' ],
 			'tandpleje'    => [ 'name' => 'Tandpleje', 'match' => 'tandbørste|tand ?børste|toothbrush|sonicare|børstehoved|brush ?heads?|tandtråd|\bfloss|flosser|mundskyl|munddouche|tandpasta|toothpaste|tandblegning|teeth ?whitening|tungeskraber|interdental|mellemrumsbørste|tandstik|bideskinne', 'not' => 'hund|kat\b|\bpet\b|toilet|wc' ],
 			'negle'        => [ 'name' => 'Negle', 'match' => 'neglelak|poly ?gel|builder ?gel|fiber ?base|rubber ?base|negle ?lak|nail ?polish|nail ?lacquer|gellak|gel ?lak|gel ?polish|neglefil|negle ?fil|nail ?file|neglebånd|cuticle|neglesaks|negleklipper|nail ?clipper|neglelampe|nail ?lamp|uv[ /-]?(led ?)?lampe|top ?coat|base ?coat|negleolie|neglepleje|negleforstærker|neglepynt|kunstige negle|press ?on|negle\b|\bnails?\b|manicure|neglebørste', 'not' => 'hånd- og negle|hånd og negle|hand ?(&|and|og) ?nail|nail ?cream|hand ?cream' ],

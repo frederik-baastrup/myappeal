@@ -10,7 +10,7 @@ Alt, der er særligt for nichen, ligger i `wp-content/plugins/playform-feeds/src
 
 ## Status (9. nov. 2026)
 
-Kodebasen er klar og ligger i github.com/frederik-baastrup/myappeal (9. nov. 2026). SiteGround-sitet, secrets og variablerne SITE_DIR/SITE_URL mangler, så udrulningen springes over indtil da. Ejeren sætter op senere. Skønhedsprogrammer godkendt og tilføjet 10. nov. 2026: BilligParfume.dk, Well.dk, Helsebixen.dk, Med24, Glow Studio, SkySkin, Beova.dk (forslag til flere står i Claudes noter fra 9. nov. 2026).
+Kodebasen er klar og ligger i github.com/frederik-baastrup/myappeal (9. nov. 2026). SiteGround-sitet, secrets og variablerne SITE_DIR/SITE_URL mangler, så udrulningen springes over indtil da. Ejeren sætter op senere. Skønhedsprogrammer godkendt og tilføjet 10. nov. 2026: BilligParfume.dk, Well.dk, Helsebixen.dk, Med24, Glow Studio, SkySkin, Beova.dk. Lusso di Lusso godkendt 18. nov. 2026 (feedid 3328; nicheparfume fra Laboratorio Olfattivo, kropspleje, hårpleje, føntørrere – ca. 100 varer på lager; diffusere, rumspray, duftlys og hårklippere kommer ikke med; `'?<slug>:<regex>'` i `Classifier` = reserven gælder kun, når navnet matcher) (forslag til flere står i Claudes noter fra 9. nov. 2026).
 
 ## Opbygning (det, der er særligt for Myappeal)
 
