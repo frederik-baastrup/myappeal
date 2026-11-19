@@ -61,15 +61,19 @@ add_action(
 			}
 			$in  = implode( ',', array_fill( 0, count( $eans ), '%s' ) );
 			$pid = (int) $wpdb->get_var( $wpdb->prepare( "SELECT product_id FROM $table WHERE ean IN ($in) AND product_id > 0 ORDER BY id LIMIT 1", ...$eans ) ); // phpcs:ignore
-			if ( ! $pid || get_post_meta( $pid, '_pf_ai_status', true ) === 'approved' ) {
+			$html = wp_kses( (string) $t['html'], [ 'p' => [], 'ul' => [], 'li' => [], 'strong' => [] ] );
+			$hash = md5( $html );
+			// Godkendte tekster røres ikke – undtagen vores egne fra denne fil, når filens tekst er ændret (19. nov. 2026).
+			if ( ! $pid || ( get_post_meta( $pid, '_pf_ai_status', true ) === 'approved'
+				&& ( get_post_meta( $pid, '_pf_text_source', true ) !== 'redaktion' || get_post_meta( $pid, '_pf_text_hash', true ) === $hash ) ) ) {
 				continue;
 			}
-			$html = wp_kses( (string) $t['html'], [ 'p' => [], 'ul' => [], 'li' => [], 'strong' => [] ] );
 			wp_update_post( [ 'ID' => $pid, 'post_content' => $html ] );
 			update_post_meta( $pid, '_pf_ai_status', 'approved' );
 			update_post_meta( $pid, '_pf_ai_version', 3 );
 			update_post_meta( $pid, '_pf_ai_date', current_time( 'mysql' ) );
 			update_post_meta( $pid, '_pf_text_source', 'redaktion' );
+			update_post_meta( $pid, '_pf_text_hash', $hash );
 			if ( method_exists( '\Playform\Feeds\AiWriter', 'index_text' ) ) {
 				\Playform\Feeds\AiWriter::index_text( $pid, $html );
 			}
