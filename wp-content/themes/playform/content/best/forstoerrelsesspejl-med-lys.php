@@ -1,6 +1,7 @@
 <?php
 /**
  * Omskrevet fra det gamle myappeal.dk (/forstoerrelsesspejl-med-lys/, 2022). Ny tekst og nye produkter.
+ * 23. nov. 2026: Gillian Jones Smart Makeupspejl 15x og UNIQ LED-spejl med sugekop var ikke på lager. Intet 15x-spejl med lys på lager, så det er skiftet til UNIQ Tri-fold (5x/10x); sugekopspejlet er skiftet til Browgame Signature Suction Mirror 10x Large.
  * Kun spejle med både forstørrelse og lys. Fakta kommer kun fra butikkernes produktdata (feed 9. nov. 2026). Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -14,7 +15,7 @@ return [
 	'more_cat' => 'makeupspejl',
 	'intro'    => <<<'HTML'
 <p>Nogle opgaver kræver, at du kommer helt tæt på. En skarp eyeliner, et enkelt hår i brynet, en kontaktlinse eller en lille urenhed. Med et almindeligt spejl læner du dig ind over vasken og kniber øjnene sammen – og står samtidig i din egen skygge.</p>
-<p>Et forstørrelsesspejl med lys klarer begge dele: det gør detaljerne større, og det lyser dem op. Herunder er vores bud på de 5 bedste fra de butikker, vi samarbejder med. Der er bordspejle, vægspejle og et lille spejl med sugekop, så du kan finde det, der passer til dit badeværelse.</p>
+<p>Et forstørrelsesspejl med lys klarer begge dele: det gør detaljerne større, og det lyser dem op. Herunder er vores bud på de 5 bedste fra de butikker, vi samarbejder med. Der er bordspejle, et vægspejl, et foldbart spejl og et spejl med sugekop, så du kan finde det, der passer til dit badeværelse.</p>
 HTML,
 	'picks'    => [
 		[
@@ -33,19 +34,19 @@ HTML,
 			'less'    => [ 'Dig, der vil have spejlet fast på væggen' ],
 		],
 		[
-			'ean'     => '5713982012835',
-			'price'   => 451,
-			'name'    => 'Gillian Jones Smart Makeupspejl Med 15x Forstørrelse',
-			'role'    => 'Mest forstørrelse',
+			'ean'     => '5709806575136',
+			'price'   => 199,
+			'name'    => 'UNIQ Tri-fold Spejl Med LED',
+			'role'    => 'Tre spejle i ét',
 			'reviews' => [],
-			'verdict' => 'Makeupspejl med 15x forstørrelse, indbygget LED-lys, justerbar lysstyrke, tre lystilstande og USB-opladning.',
+			'verdict' => 'Foldbart spejl med LED-lys og tre spejlflader: normal visning, 5x og 10x forstørrelse.',
 			'why'     => <<<'HTML'
-<p>Skal du helt tæt på, er 15x forstørrelse et stort skridt op fra de mere almindelige 10x. Det gør det nemmere at se de mindste hår, når du former bryn, eller når du sætter enkelte vipper.</p>
-<p>Spejlet har indbygget LED-lys, du kan skrue op og ned for, og tre lystilstande: varm, kølig og naturlig. Det lades op via USB, så du ikke er bundet til en stikkontakt.</p>
-<p>Det er et godt valg, hvis dit syn ikke er helt, hvad det har været, eller hvis du arbejder meget med præcision. Til hurtig daglig makeup kan 15x føles meget, så overvej det sammen med et almindeligt spejl.</p>
+<p>Kan du ikke bestemme dig for, hvor meget forstørrelse du har brug for, så tag dem alle tre. UNIQ Tri-fold har tre spejlflader ved siden af hinanden: én med normal visning, én der forstørrer 5 gange og én der forstørrer 10 gange.</p>
+<p>Det betyder, at du kan lægge foundation i den almindelige flade, gå tættere på med 5x til øjenskygge og bruge 10x til eyeliner og de sidste hår i brynet – uden at skifte spejl. LED-lyset sørger for, at ansigtet er oplyst, uanset hvor du står.</p>
+<p>Spejlet kan foldes sammen og er kompakt, så det er nemt at have med på rejsen eller lægge i en skuffe, når du ikke bruger det.</p>
 HTML,
-			'good'    => [ 'Bryn, vipper og præcisionsarbejde', 'Dig, der har svært ved at se detaljer' ],
-			'less'    => [ 'Hurtig makeup af hele ansigtet' ],
+			'good'    => [ 'Dig, der vil have flere forstørrelser', 'Rejser og weekendture', 'Lille budget' ],
+			'less'    => [ 'Dig, der vil have et stort spejl på makeupbordet' ],
 		],
 		[
 			'ean'     => '5713982008135',
@@ -78,18 +79,18 @@ HTML,
 			'less'    => [ 'Dig, der vil kunne skifte lysfarve' ],
 		],
 		[
-			'ean'     => '5713895100131',
-			'price'   => 149,
-			'name'    => 'UNIQ LED-spejl Med Sugekop Og 10x Forstørrelse',
-			'role'    => 'Til badeværelse og rejse',
+			'ean'     => '7350123101461',
+			'price'   => 243,
+			'name'    => 'Browgame Cosmetics Signature Suction Mirror 10x Large',
+			'role'    => 'Med sugekop',
 			'reviews' => [],
-			'verdict' => 'Kompakt spejl med 10x forstørrelse, indbygget LED-lys og sugekop til glatte overflader.',
+			'verdict' => 'Stort spejl med sugekop, 10x forstørrelse og indbygget LED-lys, der kan justeres.',
 			'why'     => <<<'HTML'
-<p>Det lille spejl med sugekop er måske det mest praktiske på listen. Du sætter det direkte på dit almindelige spejl, en flise eller en rude, og så har du forstørrelse lige der, hvor du står.</p>
-<p>Spejlet forstørrer 10 gange og har indbyggede LED-lys. Det gør det nemt at plukke bryn, sætte kontaktlinser eller tjekke huden i et badeværelse med dårligt lys.</p>
-<p>Fordi det er kompakt, fylder det næsten intet, og du kan pille det af og tage det med på ferie. Det er også et godt supplement til et <a href="/hollywood-spejl/">Hollywood-spejl</a> uden forstørrelse.</p>
+<p>Et spejl med sugekop er måske det mest praktiske på listen. Du sætter det direkte på dit almindelige spejl, en flise eller en rude, og så har du forstørrelse lige der, hvor du står. Browgame har lavet en stor udgave, så du ser mere af ansigtet ad gangen end i de helt små sugekopspejle.</p>
+<p>Spejlet forstørrer 10 gange, og LED-lyset er bygget ind og kan justeres. Det gør det nemmere at forme bryn, sætte kontaktlinser eller tjekke huden i et badeværelse med dårligt lys.</p>
+<p>Designet er enkelt og stilrent, og spejlet fylder ikke på hylden, fordi det sidder på glasset. Det er også et godt supplement til et <a href="/hollywood-spejl/">Hollywood-spejl</a> uden forstørrelse.</p>
 HTML,
-			'good'    => [ 'Lille budget', 'Badeværelser uden hyldeplads', 'Rejser' ],
+			'good'    => [ 'Badeværelser uden hyldeplads', 'Bryn og kontaktlinser', 'Dig, der vil se mere end i et lille sugekopspejl' ],
 			'less'    => [ 'Makeup af hele ansigtet' ],
 		],
 	],

@@ -1,6 +1,7 @@
 <?php
 /**
  * Omskrevet fra det gamle myappeal.dk (/hollywood-spejl/, 2022). Ny tekst og nye produkter.
+ * 23. nov. 2026: Gillian Jones Hollywood Mirror With Adjustable Lights og UNIQ Hollywood Trifold var ikke på lager. Skiftet til Gillian Jones Hollywood Panel Spejl og UNIQ Hollywood Makeupspejl (rosaguld; vi ved ikke, om den er tredelt, så teksten nævner det ikke).
  * Fakta om produkterne kommer kun fra butikkernes produktdata (feed 9. nov. 2026). Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -14,7 +15,7 @@ return [
 	'more_cat' => 'makeupspejl',
 	'intro'    => <<<'HTML'
 <p>Kender du det? Makeuppen ser fin ud på badeværelset, men i dagslys er der en skarp kant ved kæben, eller rougen sidder skævt. Det er sjældent din teknik, der driller. Det er lyset. En loftslampe kaster skygger ned over øjne og kinder, og så ser du ikke det hele.</p>
-<p>Et Hollywood-spejl løser det med en ramme af pærer, der lyser dit ansigt op forfra og fra siderne. Det er det samme princip, som makeupartister bruger backstage. Herunder er vores bud på de 5 bedste Hollywood-spejle fra de butikker, vi samarbejder med – fra det lille spejl, der kan køre på batteri, til det store statement-spejl på makeupbordet.</p>
+<p>Et Hollywood-spejl løser det med en ramme af pærer, der lyser dit ansigt op forfra og fra siderne. Det er det samme princip, som makeupartister bruger backstage. Herunder er vores bud på de 5 bedste Hollywood-spejle fra de butikker, vi samarbejder med – fra det lille spejl, der kan køre på batteri, til spejlet med flere lystoner på makeupbordet.</p>
 HTML,
 	'picks'    => [
 		[
@@ -33,19 +34,19 @@ HTML,
 			'less'    => [ 'Dig, der vil have forstørrelse i samme spejl' ],
 		],
 		[
-			'ean'     => '5713982010923',
-			'price'   => 1249,
-			'name'    => 'Gillian Jones Hollywood Mirror With Adjustable Lights',
-			'role'    => 'Det store makeupbord',
+			'ean'     => '5713982009668',
+			'price'   => 220,
+			'name'    => 'Gillian Jones Hollywood Panel Spejl',
+			'role'    => 'Stilrent panelspejl',
 			'reviews' => [],
-			'verdict' => 'Dekorativt bordspejl med 12 kraftige LED-pærer, justerbare lystoner, USB-port og medfølgende strømadapter.',
+			'verdict' => 'Stilrent Hollywood-spejl med kraftigt LED-lys, touch-betjening og USB-opladning.',
 			'why'     => <<<'HTML'
-<p>Drømmer du om det rigtige backstage-look derhjemme, er det her spejlet. Det er et dekorativt bordspejl med et slankt udtryk, der bliver et samlingspunkt på makeupbordet eller i badeværelset.</p>
-<p>Rammen har 12 kraftige LED-pærer, og du kan justere lystonen efter, hvad du skal. Strømadapteren følger med, så spejlet kører på strøm og ikke løber tør midt i en rutine.</p>
-<p>Der er også en indbygget USB-port. Den gør det nemt at lade telefonen op, mens du følger en makeupvideo eller lægger din playliste på. Det er et spejl til dig, der bruger tid ved makeupbordet og gerne vil nyde det.</p>
+<p>Gillian Jones Hollywood Panel Spejl er til dig, der vil have backstage-følelsen uden et stort og tungt spejl på bordet. Udtrykket er enkelt og stilrent, så det passer ind, uanset om det skal stå i soveværelset eller på hylden i badeværelset.</p>
+<p>Lyset er kraftigt LED-lys, og du betjener det med touch. Det giver et klart lys i ansigtet, når du lægger makeup, former bryn eller går i gang med aftenens hudpleje.</p>
+<p>Spejlet lades op via USB, så du ikke er bundet til en stikkontakt ved siden af spejlet. Det gør det nemt at flytte rundt på det, hvor lyset i rummet er bedst.</p>
 HTML,
-			'good'    => [ 'Et fast makeupbord', 'Dig, der vil have spejlet som blikfang', 'Opladning af telefonen ved spejlet' ],
-			'less'    => [ 'Små rum og rejser' ],
+			'good'    => [ 'Makeup, bryn og hudpleje', 'Steder uden stikkontakt i nærheden', 'Enkel indretning' ],
+			'less'    => [ 'Dig, der vil have forstørrelse i samme spejl' ],
 		],
 		[
 			'ean'     => '5713982012781',
@@ -63,18 +64,18 @@ HTML,
 			'less'    => [ 'Dig, der vil have et stort statement-spejl' ],
 		],
 		[
-			'ean'     => '5713895100063',
+			'ean'     => '5713895100070',
 			'price'   => 299,
-			'name'    => 'UNIQ Hollywood Trifold Makeupspejl',
+			'name'    => 'UNIQ Hollywood Makeupspejl',
 			'role'    => 'Med forstørrelse',
 			'reviews' => [],
-			'verdict' => 'Tredelt Hollywood-spejl med 21 hvide LED-lys langs kanten, vippefunktion og indbygget forstørrelse.',
+			'verdict' => 'Hollywood-spejl med 21 LED-lys langs kanten og forstørrelse til detaljerne.',
 			'why'     => <<<'HTML'
-<p>UNIQ Hollywood Trifold er til dig, der vil se både helheden og detaljerne. Spejlet har tre paneler, du kan klappe ud, og kanten er belyst med 21 hvide LED-lys.</p>
-<p>Fordi der er indbygget forstørrelse, kan du bruge midterspejlet til hele ansigtet og forstørrelsen til eyeliner, bryn og vipper. Så skal du ikke skifte mellem to spejle.</p>
-<p>Spejlet kan vippes, og de udklappelige sider giver dig mulighed for at se ansigtet fra flere vinkler. Når du er færdig, klapper du det sammen, så det fylder mindre på bordet. Findes i hvid og sort.</p>
+<p>UNIQ Hollywood Makeupspejl er til dig, der vil se både helheden og detaljerne. Kanten er belyst med 21 LED-lys, der giver et jævnt lys over hele ansigtet, så du kan se, om foundation og rouge er blendet ordentligt ud.</p>
+<p>Spejlet har også forstørrelse. Så kan du bruge det store spejl til hele ansigtet og forstørrelsen til eyeliner, bryn og vipper – uden at skifte mellem to spejle.</p>
+<p>Rammen er i en rosagylden farve, der giver lidt glamour på makeupbordet. Det er et godt bud, hvis du vil have forstørrelse med i købet uden at gå op i pris.</p>
 HTML,
-			'good'    => [ 'Eyeliner, bryn og detaljer', 'Se ansigtet fra flere vinkler', 'Dig, der vil kunne klappe spejlet sammen' ],
+			'good'    => [ 'Eyeliner, bryn og detaljer', 'Jævnt lys i hele ansigtet' ],
 			'less'    => [ 'Dig, der vil kunne justere lystonen' ],
 		],
 		[

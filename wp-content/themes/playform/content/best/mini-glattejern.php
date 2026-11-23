@@ -2,8 +2,8 @@
 /**
  * Omskrevet fra det gamle myappeal.dk (/mini-glattejern/, 2022). Ny tekst og nye produkter.
  * Kun 3 modeller: feedsne havde 9. nov. 2026 kun tre små rejse-glattejern med EAN på lager (Beurer HS20, Skinvibe Luna Mini, Mikamax Mini).
+ * 23. nov. 2026: Skinvibe Luna Mini var ikke på lager og er skiftet til HH Simonsen Midi Styler Maxx. Pocket Straightener: kun den sorte (5713052003725) er på lager, så den står først i 'eans'.
  * 17. nov. 2026: Mikamax Mini var ikke på lager og er skiftet til HH Simonsen Pocket Straightener (to varianter i 'eans').
- * Skinvibe ligger i Proshops kategori "Haartoerrer" – den skal være med i Proshops category_map ('haartoerrer' => '?haarstyling').
  * Fakta om produkterne kommer kun fra butikkernes produktdata. Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -36,24 +36,24 @@ HTML,
 			'less'    => [ 'Dig, der vil glatte langt, tykt hår fra bunden' ],
 		],
 		[
-			'ean'     => '5906700304729',
-			'price'   => 555,
-			'name'    => 'Skinvibe Luna Mini Wireless',
-			'role'    => 'Flest funktioner',
+			'ean'     => '5713052007501',
+			'price'   => 299,
+			'name'    => 'HH Simonsen Midi Styler Maxx',
+			'role'    => 'Til glat og bølget',
 			'reviews' => [],
-			'verdict' => 'Trådløst mini-glattejern med op til 50 minutters batteri, 3 temperaturer, indbygget kam og display.',
+			'verdict' => 'Kompakt glattejern i et stilrent design, der kan bruges til både glatte og bølgede frisurer.',
 			'why'     => <<<'HTML'
-<p>Skinvibe Luna Mini er til dig, der gerne vil have lidt mere udstyr med i tasken. Batteriet holder op til 50 minutter, og det er godt nok til flere hurtige opfriskninger i løbet af en ferie, før du skal lade op.</p>
-<p>Du vælger mellem 165, 185 og 210 °C, og et LCD-display viser, hvad du har valgt. Det giver ro i maven, når du vil passe på håret. Den indbyggede kam reder ud, mens pladerne glatter, så du slipper for at have en ekstra børste med.</p>
-<p>Jernet varmer hurtigt op, og det er en fordel, når du står i en travl lufthavn eller skal videre fra fitnesscentret med det samme.</p>
+<p>HH Simonsen Midi Styler Maxx ligger, som navnet antyder, mellem det helt lille lommejern og det store glattejern derhjemme. Det er kompakt nok til toilettasken, men lavet til at kunne mere end en hurtig opretning af pandehåret.</p>
+<p>Du kan bruge det til at glatte håret, og du kan bruge det til bløde bølger. Det gør det til et godt valg på en weekendtur, hvor du kun vil pakke ét apparat og alligevel gerne vil kunne skifte look til aftenen.</p>
+<p>Designet er enkelt og stilrent. Vil du have det allermindste jern, er lommejernet nedenfor et bedre bud.</p>
 HTML,
-			'good'    => [ 'Lange ferier', 'Dig, der vil se temperaturen', 'Udredning og glatning i ét' ],
-			'less'    => [ 'Dig, der vil holde budgettet helt nede' ],
+			'good'    => [ 'Glat og bølget hår med samme jern', 'Weekendtasken og toilettasken' ],
+			'less'    => [ 'Dig, der vil have det allermindste jern til lommen' ],
 		],
 		[
-			'ean'     => '5713052006733',
-			'eans'    => [ '5713052006733', '5713052003725' ],
-			'price'   => 189,
+			'ean'     => '5713052003725',
+			'eans'    => [ '5713052003725', '5713052006733' ],
+			'price'   => 399,
 			'name'    => 'HH Simonsen Pocket Straightener',
 			'role'    => 'Bedst til den lille taske',
 			'reviews' => [],

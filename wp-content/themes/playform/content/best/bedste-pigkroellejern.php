@@ -3,6 +3,7 @@
  * Omskrevet fra det gamle myappeal.dk (/bedste-pigkroellejern/, 2022). Ny tekst og nye produkter.
  * Kun 3 modeller: feedsne havde 9. nov. 2026 kun tre jern til tætte spiral-/pigkrøller med EAN på lager.
  * To af dem ligger i Proshops kategori "Kroellejern" – den skal være med i Proshops category_map ('kroellejern' => '?haarstyling').
+ * 23. nov. 2026: OBH Nordica Artist Curl Spiral var ikke på lager og er skiftet til Remington Pro Tight Curl Wand CI6X10.
  * Fakta om produkterne kommer kun fra butikkernes produktdata. Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -50,19 +51,19 @@ HTML,
 			'less'    => [ 'Dig, der vil have de allermindste pigkrøller' ],
 		],
 		[
-			'ean'     => '5708642058483',
+			'ean'     => '5038061136029',
 			'price'   => 349,
-			'name'    => 'OBH Nordica Artist Curl Spiral',
-			'role'    => 'Til snoede spiraler',
+			'name'    => 'Remington Pro Tight Curl Wand CI6X10',
+			'role'    => 'Flest varmetrin',
 			'reviews' => [],
-			'verdict' => 'Slankt, rektangulært krøllejern med keramisk belægning, der giver stramme, snoede krøller og fylde.',
+			'verdict' => 'Tyndt krøllejern med 10 mm titanium-keramisk cylinder, 10 varmeindstillinger fra 130 til 220 °C og opvarmning på 30 sekunder.',
 			'why'     => <<<'HTML'
-<p>OBH Nordica Artist Curl Spiral skiller sig ud med sin form. Stangen er slank og rektangulær i stedet for rund, og det giver stramme, snoede krøller med et lidt andet udtryk end de klassisk runde.</p>
-<p>Jernet booster håret med masser af fylde. Du kan beholde de definerede spiraler, eller du kan børste krøllerne igennem for et blødt, voluminøst afro-look. På den måde får du to frisurer ud af ét jern.</p>
-<p>Den keramiske belægning er beregnet til at behandle håret blidt. Er du på udkig efter noget andet end de typiske runde krøller, er det her et spændende bud.</p>
+<p>Remington Pro Tight Curl Wand er bygget til netop den slags krøller, guiden handler om. Cylinderen er kun 10 mm, så du får små, stramme spiraler i stedet for løse bølger. Navnet siger det sådan set også: det er en stav til tætte krøller.</p>
+<p>Det, der adskiller den fra de andre valg, er styringen af varmen. Du har 10 indstillinger mellem 130 og 220 °C, så du kan blive i den lave ende med fint eller farvet hår og først skrue op, hvis krøllerne ikke vil sidde. Jernet er klar efter 30 sekunder.</p>
+<p>Cylinderen er titanium-keramisk og har fire lag keramisk belægning, der også er antistatisk. Det er lavet til, at håret glider pænt rundt om stangen, mens du arbejder dig gennem de mange tynde totter.</p>
 HTML,
-			'good'    => [ 'Snoede spiraler', 'Masser af volumen', 'Dig, der vil variere looket' ],
-			'less'    => [ 'Dig, der vil have helt runde krøller' ],
+			'good'    => [ 'Små, tætte pigkrøller', 'Dig, der vil finjustere varmen', 'Fint eller farvet hår' ],
+			'less'    => [ 'Dig, der vil have store, løse lokker' ],
 		],
 	],
 	'guide'    => <<<'HTML'

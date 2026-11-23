@@ -1,7 +1,7 @@
 <?php
 /**
  * Omskrevet fra det gamle myappeal.dk (/kroellejern-til-store-kroeller/, 2022). Ny tekst og nye produkter.
- * Tre af modellerne ligger i Proshops kategori "Kroellejern" – den skal være med i Proshops category_map ('kroellejern' => '?haarstyling').
+ * 23. nov. 2026: Remington Pro Big Curl, BaByliss C112E og Revamp Deep Beach Waver var ikke på lager. C112E er skiftet til HH Simonsen ROD VS7, Revamp til HH Simonsen ROD VS5 Deep Waver. Big Curl er fjernet (intet billigt jern på 32 mm eller mere på lager), så guiden har 4 valg.
  * Fakta om produkterne kommer kun fra butikkernes produktdata. Vi har ikke selv afprøvet produkterne.
  */
 defined( 'ABSPATH' ) || exit;
@@ -10,12 +10,12 @@ return [
 	'slug'     => 'kroellejern-til-store-kroeller',
 	'date'     => '2022-06-06 10:00:00',
 	'keyword'  => 'krøllejern til store krøller',
-	'title'    => 'Krøllejern til store krøller: Vores bud på de 5 bedste til fyldige lokker',
-	'excerpt'  => 'Store, løse krøller kræver en tyk stang. Her er vores bud på de 5 bedste krøllejern til store krøller og bølger fra de butikker, vi samarbejder med – fra 32 mm og op.',
+	'title'    => 'Krøllejern til store krøller: Vores bud på de 4 bedste til fyldige lokker',
+	'excerpt'  => 'Store, løse krøller kræver en tyk stang. Her er vores bud på de 4 bedste krøllejern til store krøller og bølger fra de butikker, vi samarbejder med – fra 32 mm og op.',
 	'more_cat' => 'kroellejern',
 	'intro'    => <<<'HTML'
 <p>Drømmer du om de bløde, fyldige lokker, der ser ud, som om du lige har været hos frisøren? Så er tykkelsen på stangen det vigtigste valg, du træffer. Et tyndt krøllejern giver små, faste krøller, uanset hvor dygtig du er. Vil du have store krøller og løse bølger, skal du have fat i en tyk stang.</p>
-<p>Vi har kigget efter krøllejern med en stang på 32 mm eller mere og et enkelt bølgejern til de helt store, hoppende bølger. Herunder er vores bud på de 5 bedste fra de butikker, vi samarbejder med, og nederst forklarer vi, hvordan du vælger tykkelse og varme.</p>
+<p>Vi har kigget efter krøllejern med en stang på 32 mm eller mere og et enkelt bølgejern til de helt store, hoppende bølger. Herunder er vores bud på de 4 bedste fra de butikker, vi samarbejder med, og nederst forklarer vi, hvordan du vælger tykkelse og varme.</p>
 HTML,
 	'picks'    => [
 		[
@@ -34,33 +34,18 @@ HTML,
 			'less'    => [ 'Dig, der vil have de helt store, løse bølger' ],
 		],
 		[
-			'ean'     => '4008496975754',
-			'price'   => 204,
-			'name'    => 'Remington Pro Big Curl CI5538',
-			'role'    => 'Største tromle',
+			'ean'     => '5713052001905',
+			'price'   => 749,
+			'name'    => 'HH Simonsen ROD VS7 Curling Iron',
+			'role'    => 'Klassiske store krøller',
 			'reviews' => [],
-			'verdict' => 'Krøllejern med 38 mm tromle til store og fyldige krøller og 8 temperaturtrin fra 140 til 210 °C.',
+			'verdict' => 'Keramisk krøllejern med 32 mm spole, titanium-belægning, 120–200 °C og 3 meter drejeledning.',
 			'why'     => <<<'HTML'
-<p>Remington Pro Big Curl er til dig, der vil have krøllerne endnu større. Med 38 mm er tromlen den tykkeste blandt vores valg, og det betyder bløde, åbne lokker med masser af fylde. Har du langt hår, giver den tykke stang et resultat, der minder om en føntørring med rundbørste.</p>
-<p>Tromlen har en keramisk titaniumbelægning og en antistatisk, turmalin-ionisk overflade, der skal få håret til at glide let. Du vælger mellem 8 temperaturtrin fra 140 til 210 °C, så du kan gå forsigtigt til værks med fint hår.</p>
-<p>Det er et prisvenligt bud på de virkelig store krøller.</p>
+<p>HH Simonsen ROD VS7 er til dig, der drømmer om de klassiske, runde lokker – den slags prinsessekrøller, hvor den ene ligner den næste. Spolen er på 32 mm, og det er netop den tykkelse, hvor krøllerne bliver store uden at miste formen.</p>
+<p>Jernet er keramisk med en titanium-belægning, og du styrer varmen fra 120 til 200 °C. Start lavt, hvis dit hår er fint eller farvet, og gå kun op, hvis krøllerne falder ud for hurtigt. Det varmer hurtigt op, så du ikke står og venter.</p>
+<p>Drejeledningen er hele 3 meter lang. Det giver god plads til at komme rundt om baghovedet, også når stikkontakten ikke sidder lige ved spejlet. Prisen ligger i den høje ende af vores valg.</p>
 HTML,
-			'good'    => [ 'Langt hår', 'Store, åbne lokker', 'Dig med fint hår, der vil starte lavt' ],
-			'less'    => [ 'Kort hår, hvor tromlen kan være for tyk' ],
-		],
-		[
-			'ean'     => '3030050165364',
-			'price'   => 599,
-			'name'    => 'BaByliss C112E Curl Styler Luxe',
-			'role'    => 'Med kold luft',
-			'reviews' => [],
-			'verdict' => 'Krøllejern med 36 mm cylinder og koldluftsteknologi, der hurtigt skaber løse krøller.',
-			'why'     => <<<'HTML'
-<p>BaByliss Curl Styler Luxe skiller sig ud fra de klassiske krøllejern, fordi den har koldluftsteknologi. Den er lavet til at skabe løse krøller nemt og hurtigt, og det mærker du især, når hele håret skal krølles en travl morgen.</p>
-<p>Cylinderen er på 36 mm, så krøllerne bliver store og falder blødt omkring ansigtet. Du vælger mellem 3 varmeindstillinger, så du kan tilpasse varmen til dit hår og starte lavt, hvis det er fint eller farvet.</p>
-<p>Den ligger i den dyre ende af vores valg, men er værd at overveje, hvis du gerne vil have et krøllejern, der kan lidt mere end at varme.</p>
-HTML,
-			'good'    => [ 'Store, løse krøller', 'Travle morgener', 'Dig, der krøller hele håret' ],
+			'good'    => [ 'Ensartede, runde krøller', 'Skulderlangt og langt hår', 'Badeværelser med stikkontakten langt fra spejlet' ],
 			'less'    => [ 'Dig, der vil holde prisen nede' ],
 		],
 		[
@@ -79,18 +64,18 @@ HTML,
 			'less'    => [ 'Dig, der vil have et digitalt display' ],
 		],
 		[
-			'ean'     => '5010777154191',
-			'price'   => 699,
-			'name'    => 'Revamp Progloss Deep Beach Waver',
+			'ean'     => '5713052001882',
+			'price'   => 689,
+			'name'    => 'HH Simonsen ROD VS5 Deep Waver',
 			'role'    => 'Til store bølger',
 			'reviews' => [],
-			'verdict' => 'Bølgejern med tre store, keramiske spoler, der giver dybe, hoppende bølger.',
+			'verdict' => 'Keramisk bølgejern med titanium-belægning til store, bløde bølger, 150–210 °C og 3 meter drejeledning.',
 			'why'     => <<<'HTML'
-<p>Vil du have store bølger frem for runde krøller, er Revamp Progloss Deep Beach Waver et andet slags værktøj. Den har tre store spoler ved siden af hinanden, og du klemmer håret mellem dem i stedet for at rulle det rundt om en stang.</p>
-<p>Resultatet er dybe, hoppende bølger med et strandagtigt look. Teknikken er nem at lære: du arbejder dig ned gennem håret sektion for sektion, så bølgerne hænger sammen fra top til spids.</p>
-<p>Spolerne er keramiske og varmes op, og det gør bølgejernet til et oplagt valg, hvis du synes, at et almindeligt krøllejern giver for "pyntede" krøller. Det er det dyreste af vores bud.</p>
+<p>Vil du have store bølger frem for runde krøller, er HH Simonsen ROD VS5 Deep Waver et andet slags værktøj. Du klemmer håret ind i jernet i stedet for at rulle det rundt om en stang, og resultatet bliver store, bløde bølger.</p>
+<p>Du kan gå i to retninger med det: et bølgende, glamourøst look til en fest eller et mere afslappet strandlook til hverdag. Arbejd dig ned gennem håret sektion for sektion, så bølgerne hænger sammen fra top til spids.</p>
+<p>Jernet er keramisk med titanium-belægning, varmen kan stilles fra 150 til 210 °C, og det varmer hurtigt op. Den 3 meter lange drejeledning gør det nemmere at nå hele vejen rundt. Det er et oplagt valg, hvis du synes, at et almindeligt krøllejern giver for "pyntede" krøller.</p>
 HTML,
-			'good'    => [ 'Store beach waves', 'Begyndere, der vil have et nemt greb', 'Langt hår' ],
+			'good'    => [ 'Store, bløde bølger', 'Strandlook i hverdagen', 'Langt hår' ],
 			'less'    => [ 'Dig, der vil have runde, definerede krøller' ],
 		],
 	],
