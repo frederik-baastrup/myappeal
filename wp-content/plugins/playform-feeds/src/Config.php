@@ -490,6 +490,28 @@ final class Config {
 	}
 
 	/** Produkter, der aldrig skal med (navn eller butikkens kategori). */
+	/**
+	 * Myappeal er kun købsguides (ejerens valg 24. nov. 2026): importen tager kun de varer, guiderne bruger
+	 * (EAN'er i themes/playform/content/best/*.php). Alle andre varer kommer ikke med.
+	 */
+	public static function guide_eans(): ?array {
+		static $eans = null;
+		if ( null === $eans ) {
+			$eans = [];
+			foreach ( glob( WP_CONTENT_DIR . '/themes/playform/content/best/*.php' ) ?: [] as $f ) {
+				if ( preg_match_all( "~'eans?'\s*=>\s*(?:\[([^\]]*)\]|'(\d{8,14})')~", (string) file_get_contents( $f ), $m, PREG_SET_ORDER ) ) {
+					foreach ( $m as $x ) {
+						preg_match_all( '~\d{8,14}~', ( $x[1] ?? '' ) . ' ' . ( $x[2] ?? '' ), $d );
+						foreach ( $d[0] as $e ) {
+							$eans[ ltrim( $e, '0' ) ] = true;
+						}
+					}
+				}
+			}
+		}
+		return $eans;
+	}
+
 	/** Varer under denne pris kommer ikke med, medmindre de er på tilbud (ejerens valg 21. nov. 2026, spar CPU). */
 	public static function min_price(): float {
 		return 100;

@@ -8,6 +8,10 @@ Ejer: Frederik Baastrup (Mondae). Al tekst på siden er på dansk.
 
 Alt, der er særligt for nichen, ligger i `wp-content/plugins/playform-feeds/src/Config.php`: navn og kontaktoplysninger (`site()`), shops, kategorier, underkategorier, udelukkelser, mærker (`brand_categories()`), prisintervaller. Temaet læser navn, domæne m.m. via `playform_site()`. Skriv aldrig "Myappeal" eller "myappeal.dk" direkte i en skabelon.
 
+## Kun købsguides (24. nov. 2026)
+
+Ejerens valg efter CPU-kvoten og et angreb på filtersiderne: Myappeal er nu en ren købsguide-side. Importen tager kun varer, hvis EAN står i en guide (`Config::guide_eans()` læser `content/best/*.php`; `Importer::too_cheap()` udelukker resten, også ved omsortering). `inc/guide-only.php`: emner (`playform_guide_topics()`), menuen bygges af guiderne (`playform_guide_menu()`), forsiden viser guiderne pr. emne, butikssider (kategorier, filtre, søgning, tilbud, kampagner, udgåede produkter) sendes med 301 til /koebsguide/, og links til kategorisider i guiderne bliver almindelig tekst. Ingen søgefelt, tilbudslink eller kampagnebar. 27 guides (20 nye 24. nov. 2026, skrevet af Sonnet ud fra feed-data). Ny guide = ny fil i content/best med EAN'er fra feedsne – næste import henter varerne. De 5.116 produkttekster i content/product-texts.php bruges kun til guidernes varer.
+
 ## Status (9. nov. 2026)
 
 Kodebasen er klar og ligger i github.com/frederik-baastrup/myappeal (9. nov. 2026). SiteGround-sitet, secrets og variablerne SITE_DIR/SITE_URL mangler, så udrulningen springes over indtil da. Ejeren sætter op senere. Skønhedsprogrammer godkendt og tilføjet 10. nov. 2026: BilligParfume.dk, Well.dk, Helsebixen.dk, Med24, Glow Studio, SkySkin, Beova.dk. Lusso di Lusso godkendt 18. nov. 2026 (feedid 3328; nicheparfume fra Laboratorio Olfattivo, kropspleje, hårpleje, føntørrere – ca. 100 varer på lager; diffusere, rumspray, duftlys og hårklippere kommer ikke med; `'?<slug>:<regex>'` i `Classifier` = reserven gælder kun, når navnet matcher) (forslag til flere står i Claudes noter fra 9. nov. 2026).

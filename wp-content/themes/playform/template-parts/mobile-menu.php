@@ -17,8 +17,8 @@ $promo   = static function ( string $url, string $label, string $img ) use ( $ch
 	<a class="dr__promo" href="<?php echo esc_url( $url ); ?>">
 		<?php if ( $img ) : ?><img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy"><?php endif; ?>
 		<span class="dr__promo-body">
-			<span class="dr__promo-tag"><?php echo playform_icon( 'tag', 13, 1.6 ); // phpcs:ignore ?>Tilbud</span>
-			<span class="dr__promo-title">Tilbud på <?php echo esc_html( mb_strtolower( $label ) ); ?></span>
+			<span class="dr__promo-tag">Købsguides</span>
+			<span class="dr__promo-title">Alle købsguides</span>
 		</span>
 		<span class="dr__promo-arrow" aria-hidden="true"><?php echo $chev; // phpcs:ignore ?></span>
 	</a>
@@ -50,9 +50,9 @@ $head = static function ( string $title ) use ( $back ): void {
 					</li>
 				<?php endforeach; ?>
 				<li>
-					<a class="dr__row dr__row--sale" href="<?php echo esc_url( playform_tilbud_url() ); ?>">
+					<a class="dr__row dr__row--sale" href="<?php echo esc_url( playform_guide_url() ); ?>">
 						<span class="dr__thumb dr__thumb--icon"><?php echo playform_icon( 'tag', 20, 1.5 ); // phpcs:ignore ?></span>
-						<span class="dr__name">Tilbud<small>Butikkernes egne tilbud lige nu</small></span>
+						<span class="dr__name">Alle købsguides<small>Vores bud på de bedste produkter</small></span>
 						<?php echo $chev; // phpcs:ignore ?>
 					</a>
 				</li>

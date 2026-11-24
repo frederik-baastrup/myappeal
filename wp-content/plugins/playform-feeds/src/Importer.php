@@ -353,20 +353,26 @@ final class Importer {
 	public static function too_cheap( array $offer ): bool {
 		$min = method_exists( Config::class, 'min_price' ) ? (float) Config::min_price() : 0.0;
 		$p   = (float) ( $offer['price'] ?? 0 );
+		if ( method_exists( Config::class, 'guide_eans' ) ) { // kun guidernes varer (Myappeal, 24. nov. 2026)
+			$g = Config::guide_eans();
+			if ( null !== $g && ! isset( $g[ ltrim( (string) ( $offer['ean'] ?? '' ), '0' ) ] ) ) {
+				return true;
+			}
+		}
 		return $min > 0 && $p > 0 && $p < $min && ! ( (float) ( $offer['list_price'] ?? 0 ) > $p );
 	}
 
 	public static function reclassify(): array {
 		global $wpdb;
 		$t       = Offers::table();
-		$rows    = $wpdb->get_results( "SELECT id, product_id, shop, name, brand, shop_category, price, list_price, category FROM $t", ARRAY_A );
+		$rows    = $wpdb->get_results( "SELECT id, product_id, shop, name, brand, shop_category, price, list_price, ean, category FROM $t", ARRAY_A );
 		$changed = [];
 		$moves   = [];
 		$shops   = Config::shops();
 		foreach ( $rows as $r ) {
 			$offer = [ 'shop' => (string) $r['shop'], 'name' => (string) $r['name'], 'brand' => (string) $r['brand'], 'shop_category' => (string) $r['shop_category'], 'price' => (float) $r['price'] ];
 			// Butikker, der er fjernet fra Config (fx Proshop 21. nov. 2026), ryddes også væk.
-			$cat   = ( ! isset( $shops[ $r['shop'] ] ) || self::too_cheap( $offer + [ 'list_price' => (float) $r['list_price'] ] ) ) ? 'exclude' : Classifier::classify( $offer );
+			$cat   = ( ! isset( $shops[ $r['shop'] ] ) || self::too_cheap( $offer + [ 'list_price' => (float) $r['list_price'], 'ean' => (string) $r['ean'] ] ) ) ? 'exclude' : Classifier::classify( $offer );
 			if ( $cat === $r['category'] ) {
 				continue;
 			}

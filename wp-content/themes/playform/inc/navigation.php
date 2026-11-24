@@ -289,6 +289,10 @@ function playform_menu(): array {
 	if ( $menu !== null ) {
 		return $menu;
 	}
+	if ( function_exists( 'playform_guide_menu' ) ) { // Myappeal: kun købsguides (24. nov. 2026)
+		$menu = playform_guide_menu();
+		return $menu;
+	}
 	$menu = [];
 	foreach ( playform_menu_spec() as [ $slug, $cats ] ) {
 		$term = get_term_by( 'slug', $slug, 'product_cat' );
