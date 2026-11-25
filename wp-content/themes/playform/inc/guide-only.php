@@ -11,8 +11,8 @@ function playform_guide_topics(): array {
 	return [
 		'makeup'   => [ 'Makeup', '~mascara|foundation|concealer|bb-cream|spejl|primer|laeb|eyeliner|pudder~' ],
 		'parfume'  => [ 'Parfume', '~parfume|duft~' ],
-		'haar'     => [ 'Hår', '~haar|toershampoo|glattejern|kroellejern|foentoerrer|shampoo|balsam~' ],
-		'krop'     => [ 'Krop & tænder', '~bodylotion|selvbruner|hudpleje-krop|tandboerste|tand|ipl|epilator|ladyshave~' ],
+		'haar'     => [ 'Hår', '~haar|toershampoo|glattejern|kroellejern|foentoerrer|airstyler|shampoo|balsam~' ],
+		'krop'     => [ 'Krop & tænder', '~bodylotion|selvbruner|hudpleje-krop|tandboerste|tand|ipl|vandflosser|flosser|epilator|ladyshave~' ],
 		'hudpleje' => [ 'Hudpleje', '~.~' ],
 	];
 }
