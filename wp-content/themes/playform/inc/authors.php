@@ -208,6 +208,26 @@ function playform_author_profile(): void {
 	update_option( 'playform_author_profile', 2, false );
 }
 
+/**
+ * Version 3 (26. nov. 2026, Myappeal er kun købsguides): bioen nævnte "tilbud". Skiftes kun, hvis den stadig står på
+ * version 2-teksten – en bio, redaktøren selv har rettet, bliver stående.
+ */
+add_action(
+	'init',
+	static function () {
+		if ( (int) get_option( 'playform_author_profile' ) !== 2 || '' === playform_site( 'niche' ) ) {
+			return;
+		}
+		$v2  = sprintf( 'Frederik Baastrup har grundlagt %1$s og er redaktør på siden. På %1$s samler han %2$s fra de butikker, siden samarbejder med, og skriver købsguides, der gør det lettere at vælge hudpleje, hårstylere og plejeprodukter ud fra pris, produktdata og tilbud. Han lægger åbent frem, hvordan produkterne er valgt, og hvordan siden tjener penge.', playform_site( 'name' ), playform_site( 'niche' ) );
+		$new = sprintf( 'Frederik Baastrup har grundlagt %1$s og er redaktør på siden. Han samler %2$s fra de butikker, siden samarbejder med, i købsguides, der gør det lettere at vælge hudpleje, hårstylere og plejeprodukter ud fra produktdata og priser hos flere butikker. Produkterne er ikke afprøvet af redaktionen – og han lægger åbent frem, hvordan de er valgt, og hvordan siden tjener penge.', playform_site( 'name' ), playform_site( 'niche' ) );
+		foreach ( get_users( [ 'meta_key' => 'description', 'meta_value' => $v2, 'number' => 5 ] ) as $u ) { // phpcs:ignore
+			update_user_meta( $u->ID, 'description', $new );
+		}
+		update_option( 'playform_author_profile', 3, false );
+	},
+	20
+);
+
 /** Nyt profilbillede (12. nov. 2026): skift standardbilledet ud, men lad et billede, ejeren selv har sat ind, være. */
 add_action(
 	'init',

@@ -503,3 +503,14 @@ main > .ma-seo:last-child { margin-bottom: 0; }
 	.pick { padding: 16px; }
 	.pick__ad { top: 12px; right: 12px; }
 }
+
+/* Den gamle to-linjers grid-header (Kitzhen) gælder ikke her: én linje, ingen streg midt i hero/guide */
+@media (min-width: 1081px) {
+	.ma-head .site-header__row { display: flex; grid-template: none; height: 80px; }
+	.ma-head .site-header__row::before { display: none; }
+}
+.pick-verdict { background: var(--ma-blush) !important; }
+.guide__body table.cmp th { background: var(--ma-blush); border: 0; }
+.guide__body table.cmp td a { text-decoration: none; }
+.author-card__rules { background: rgba(224,4,126,.06) !important; }
+.guide__body .pick-verdict { border: 0; border-radius: 0 0 24px 24px; }
