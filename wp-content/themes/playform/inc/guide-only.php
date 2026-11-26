@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Emner i menu og på forsiden: slug => [navn, regex mod guidens slug]. Første match vinder. */
-function playform_guide_topics(): array {
+function playform_guide_emner(): array {
 	return [
 		'makeup'   => [ 'Makeup', '~mascara|foundation|concealer|bb-cream|spejl|primer|laeb|eyeliner|pudder~' ],
 		'parfume'  => [ 'Parfume', '~parfume|duft~' ],
@@ -18,7 +18,7 @@ function playform_guide_topics(): array {
 }
 
 function playform_guide_topic( string $slug ): string {
-	foreach ( playform_guide_topics() as $t => [ , $re ] ) {
+	foreach ( playform_guide_emner() as $t => [ , $re ] ) {
 		if ( preg_match( $re, $slug ) ) {
 			return $t;
 		}
@@ -32,7 +32,7 @@ function playform_guides_by_topic(): array {
 	if ( null !== $out ) {
 		return $out;
 	}
-	$out = array_fill_keys( array_keys( playform_guide_topics() ), [] );
+	$out = array_fill_keys( array_keys( playform_guide_emner() ), [] );
 	$cat = get_term_by( 'slug', 'kobsguide', 'category' );
 	if ( ! $cat ) {
 		return $out;
@@ -56,7 +56,7 @@ function playform_guide_menu(): array {
 		if ( ! $posts ) {
 			continue;
 		}
-		$label = playform_guide_topics()[ $t ][0];
+		$label = playform_guide_emner()[ $t ][0];
 		$url   = home_url( '/#' . $t );
 		$menu[] = [
 			'label'   => $label,

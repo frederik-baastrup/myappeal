@@ -5,7 +5,7 @@
 defined( 'ABSPATH' ) || exit;
 get_header();
 
-$topics = playform_guide_topics();
+$topics = playform_guide_emner();
 $groups = array_filter( playform_guides_by_topic() );
 $card   = static function ( WP_Post $p ): void {
 	$img = playform_post_image( $p, 700 ) ?: playform_asset( 'cat-placeholder.svg' );
