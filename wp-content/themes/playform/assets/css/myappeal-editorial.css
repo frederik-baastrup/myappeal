@@ -373,3 +373,9 @@ main > .ma-seo:last-child { margin-bottom: 0; }
 	.ma-reveal.is-waiting { opacity: 1; transform: none; }
 	.ma-fcard__img img, .ma-scene__media img, .ma-pcard__img img, .ma-mega__img img, .ma-latest .ma-thumb img { transition: none !important; transform: none !important; }
 }
+
+/* Emnelinks (/#haar) lander med lidt luft – på mobil under den klæbende header */
+.ma-topic { scroll-margin-top: 0; }
+@media (max-width: 1080px) { .ma-topic { scroll-margin-top: 64px; } }
+/* Fanerækken toner ud i højre kant, så man kan se, at der er flere */
+@media (min-width: 761px) { .ma-tabs { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); padding-right: 48px; } }
