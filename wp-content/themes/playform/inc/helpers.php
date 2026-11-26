@@ -49,6 +49,10 @@ function playform_icon( string $name, int $size = 20, float $stroke = 1.6 ): str
 		'truck'       => '<path d="M2.5 6.5h11v9.5h-11z"/><path d="M13.5 9.5h4l3 3v3.5h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
 		'clock'       => '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
 		'calendar'    => '<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+		'book'        => '<path d="M12 6.5C10.5 5.2 8.2 4.5 4 4.5v13c4.2 0 6.5.7 8 2 1.5-1.3 3.8-2 8-2v-13c-4.2 0-6.5.7-8 2z"/><path d="M12 6.5v13"/>',
+		'doc'         => '<path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M10 12.5h5M10 16h5"/>',
+		'compare'     => '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+		'eye'         => '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
 		'product'     => '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-4.5-4.5-8 8"/>',
 	];
 	return sprintf(

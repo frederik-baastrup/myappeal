@@ -25,6 +25,7 @@ final class Admin {
 		delete_transient( 'playform_front_popular' );
 		delete_transient( 'playform_front_deals' );
 		delete_transient( 'playform_front_new' );
+		delete_transient( 'playform_front_guides_v1' ); // Myappeal: forsidens guides, valg og priser (inc/guide-front.php)
 		foreach ( [ 'haarstyling', 'dameparfume', 'ipl', 'el-tandboerste', 'serum' ] as $c ) {
 			delete_transient( 'playform_front_cat_' . $c ); // forsidens kategori-sektioner
 		}

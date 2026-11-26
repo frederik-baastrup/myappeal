@@ -8,23 +8,23 @@
 				<p>Vi samler <?php echo esc_html( playform_site( 'niche' ) ); ?> fra de butikker, vi samarbejder med, så du kan finde det rigtige produkt til din hud, dit hår og din rutine uden at lede i timevis.</p>
 				<span><?php echo esc_html( playform_site( 'email' ) ); ?></span>
 			</div>
+			<?php $pf_fg = playform_front_guides(); ?>
 			<div class="foot__col">
-				<span class="foot__title">Kategorier</span>
-				<?php foreach ( array_slice( playform_menu(), 0, 7 ) as $item ) : ?>
-					<a href="<?php echo esc_url( playform_category_url( $item['slug'] ) ); ?>"><?php echo esc_html( $item['label'] ); ?></a>
+				<span class="foot__title">Emner</span>
+				<?php foreach ( $pf_fg['topics'] as $t => $topic ) : ?>
+					<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>"><?php echo esc_html( $topic['label'] ); ?></a>
 				<?php endforeach; ?>
 			</div>
 			<div class="foot__col">
-				<span class="foot__title">Populære</span>
-				<?php foreach ( playform_footer_popular() as [ $label, $slug ] ) : ?>
-					<a href="<?php echo esc_url( playform_category_url( $slug ) ); ?>"><?php echo esc_html( $label ); ?></a>
+				<span class="foot__title">Nye guides</span>
+				<?php foreach ( playform_front_latest( 5 ) as $g ) : ?>
+					<a href="<?php echo esc_url( $g['url'] ); ?>"><?php echo esc_html( $g['short'] ); ?></a>
 				<?php endforeach; ?>
 			</div>
 			<div class="foot__col">
-				<span class="foot__title">Viden</span>
-				<a href="<?php echo esc_url( playform_guide_url() ); ?>">Købsguides</a>
-				<a href="<?php echo esc_url( playform_campaign_url( 'black-friday' ) ); ?>">Black Friday</a>
-				<a href="<?php echo esc_url( home_url( '/viden/' ) ); ?>">Nyheder</a>
+				<span class="foot__title">Læs mere</span>
+				<a href="<?php echo esc_url( playform_guide_url() ); ?>">Alle købsguides</a>
+				<a href="<?php echo esc_url( home_url( '/viden/' ) ); ?>">Artikler</a>
 			</div>
 			<div class="foot__col">
 				<span class="foot__title">Om <?php echo esc_html( playform_site( 'name' ) ); ?></span>

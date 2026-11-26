@@ -136,16 +136,6 @@
 		header.classList.remove('is-search-open');
 		if (searchToggle) searchToggle.setAttribute('aria-expanded', 'false');
 	};
-	if (searchToggle && header) {
-		searchToggle.addEventListener('click', function () {
-			if (header.classList.contains('is-search-open')) { closeSearch(); return; }
-			if (drawer && drawer.classList.contains('is-open')) toggle.click();
-			header.classList.add('is-search-open');
-			searchToggle.setAttribute('aria-expanded', 'true');
-			var field = document.getElementById('site-search');
-			if (field) field.focus();
-		});
-	}
 
 	// Mobilmenu: skuffe med lag (menupunkt → kategori). Links med data-to åbner næste lag i stedet for siden.
 	var toggle = document.querySelector('.menu-toggle');
@@ -252,89 +242,6 @@
 				ticking = false;
 			});
 		}, { passive: true });
-	}
-
-	// Søgning: feltet vokser, menuen toner ud, forslag mens man skriver
-	var form = document.querySelector('[data-search]');
-	if (form && header) {
-		var input = form.querySelector('input[name="s"]');
-		var drop = form.querySelector('.search__drop');
-		var popular = form.querySelector('.search__popular');
-		var results = form.querySelector('.search__results');
-		var endpoint = form.getAttribute('data-endpoint');
-		var debounce, latest = 0;
-
-		function el(tag, cls, text) {
-			var n = document.createElement(tag);
-			if (cls) n.className = cls;
-			if (text) n.textContent = text;
-			return n;
-		}
-		var placeholder = input.placeholder;
-		function open() {
-			header.classList.add('is-searching');
-			input.placeholder = 'Hvad leder du efter?';
-			drop.hidden = false;
-		}
-		function close() {
-			header.classList.remove('is-searching');
-			input.placeholder = placeholder;
-			drop.hidden = true;
-		}
-		function render(d, q) {
-			results.textContent = '';
-			if (d.cats && d.cats.length) {
-				var g = el('div', 'search__group');
-				g.appendChild(el('span', 'mm__title', 'Kategorier'));
-				var wrap = el('div', 'search__cats');
-				d.cats.forEach(function (c) { var a = el('a', '', c.name); a.href = c.url; wrap.appendChild(a); });
-				g.appendChild(wrap);
-				results.appendChild(g);
-			}
-			if (d.products && d.products.length) {
-				var gp = el('div', 'search__group');
-				gp.appendChild(el('span', 'mm__title', 'Produkter'));
-				var list = el('div', 'search__prods');
-				d.products.forEach(function (p) {
-					var a = el('a', 'search__prod');
-					a.href = p.url;
-					if (p.image) { var img = el('img'); img.src = p.image; img.alt = ''; img.loading = 'lazy'; a.appendChild(img); }
-					else a.appendChild(el('span', 'search__ph'));
-					var name = el('span', 'search__name');
-					name.appendChild(el('b', '', p.name));
-					if (p.brand) name.appendChild(el('span', '', p.brand));
-					a.appendChild(name);
-					a.appendChild(el('span', 'search__price', p.price));
-					list.appendChild(a);
-				});
-				gp.appendChild(list);
-				results.appendChild(gp);
-				var all = el('a', 'search__all', 'Se alle resultater for "' + q + '" →');
-				all.href = d.all;
-				results.appendChild(all);
-			}
-			if (!results.childNodes.length) results.appendChild(el('p', 'search__empty', 'Ingen produkter matcher "' + q + '". Prøv et andet ord.'));
-			popular.hidden = true;
-			results.hidden = false;
-		}
-		function suggest() {
-			var q = input.value.trim();
-			if (q.length < 2) { popular.hidden = false; results.hidden = true; return; }
-			var id = ++latest;
-			fetch(endpoint + '?q=' + encodeURIComponent(q), { headers: { Accept: 'application/json' } })
-				.then(function (r) { return r.json(); })
-				.then(function (d) { if (id === latest) render(d, q); })
-				.catch(function () {});
-		}
-		input.addEventListener('focus', open);
-		form.addEventListener('click', function () { if (!header.classList.contains('is-searching')) input.focus(); });
-		input.addEventListener('input', function () { clearTimeout(debounce); debounce = setTimeout(suggest, 180); });
-		document.addEventListener('click', function (e) { if (!form.contains(e.target)) close(); });
-		document.addEventListener('keydown', function (e) {
-			if (e.key === 'Escape' && header.classList.contains('is-searching')) { close(); input.blur(); }
-		});
-		form.addEventListener('submit', function (e) { if (!input.value.trim()) e.preventDefault(); });
-		if (input.value.trim()) suggest();
 	}
 
 	// Sortering skifter med det samme
@@ -580,4 +487,203 @@ document.addEventListener('click', function (e) {
 		['pointerdown', 'scroll', 'keydown', 'touchstart'].forEach(function (e) { window.removeEventListener(e, set, true); });
 	};
 	['pointerdown', 'scroll', 'keydown', 'touchstart'].forEach(function (e) { window.addEventListener(e, set, { capture: true, passive: true }); });
+})();
+
+/* Myappeal (26. nov. 2026): mega-menu, søg i guides, faner med scene-kort og rolige animationer.
+   Kun på allerede renderet HTML – ingen kald til serveren. */
+(function () {
+	var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	var narrow = window.matchMedia('(max-width: 760px)');
+
+	// Mega-menu: hover og fokus åbner, Esc og klik udenfor lukker. Touch: første tryk åbner, andet følger linket.
+	var items = Array.prototype.slice.call(document.querySelectorAll('[data-mn]'));
+	var lastPointer = 'mouse';
+	document.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType || 'mouse'; }, true);
+	function setOpen(item, open) {
+		if (open) items.forEach(function (o) { if (o !== item) setOpen(o, false); });
+		item.classList.toggle('is-open', open);
+		var link = item.querySelector('.ma-nav__link');
+		if (link) link.setAttribute('aria-expanded', open ? 'true' : 'false');
+	}
+	items.forEach(function (item) {
+		var timer;
+		var link = item.querySelector('.ma-nav__link');
+		item.addEventListener('mouseenter', function () { clearTimeout(timer); timer = setTimeout(function () { setOpen(item, true); }, 70); });
+		item.addEventListener('mouseleave', function () { clearTimeout(timer); timer = setTimeout(function () { setOpen(item, false); }, 140); });
+		item.addEventListener('focusin', function () { clearTimeout(timer); setOpen(item, true); });
+		item.addEventListener('focusout', function (e) { if (!item.contains(e.relatedTarget)) setOpen(item, false); });
+		if (link) link.addEventListener('click', function (e) {
+			if (lastPointer !== 'mouse' && !item.classList.contains('is-open')) { e.preventDefault(); setOpen(item, true); }
+			else if (lastPointer === 'mouse' || item.classList.contains('is-open')) setOpen(item, false);
+		});
+	});
+	document.addEventListener('click', function (e) { items.forEach(function (it) { if (!it.contains(e.target)) setOpen(it, false); }); });
+	document.addEventListener('keydown', function (e) {
+		if (e.key !== 'Escape') return;
+		items.forEach(function (it) {
+			if (!it.classList.contains('is-open')) return;
+			setOpen(it, false);
+			var l = it.querySelector('.ma-nav__link');
+			if (it.contains(document.activeElement) && l) { l.focus(); setOpen(it, false); }
+		});
+	});
+
+	// Søg i guides: filtrerer den inline JSON-liste (titel, kort navn, emne, adresse).
+	var dataEl = document.getElementById('ma-guides-data');
+	var guides = [];
+	try { guides = dataEl ? JSON.parse(dataEl.textContent) : []; } catch (err) { guides = []; }
+	var norm = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-̂̄-̉̋-ͯ]/g, ''); };
+	guides.forEach(function (g) { g.hay = norm(g.t + ' ' + g.s + ' ' + g.e + ' ' + g.k); g.sn = norm(g.s); });
+	function find(q) {
+		q = norm(q).trim();
+		if (!q) return guides.slice(0, 6);
+		var words = q.split(/\s+/);
+		return guides.map(function (g) {
+			if (!words.every(function (w) { return g.hay.indexOf(w) > -1; })) return null;
+			return { g: g, score: g.sn.indexOf(q) === 0 ? 0 : (g.sn.indexOf(q) > -1 ? 1 : 2) };
+		}).filter(Boolean).sort(function (a, b) { return a.score - b.score; }).slice(0, 8).map(function (x) { return x.g; });
+	}
+	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+	var uid = 0;
+	function bindSearch(input) {
+		var list = document.getElementById(input.getAttribute('data-guide-search'));
+		if (!list) return null;
+		var active = -1;
+		var label = input.closest('.ma-search__box') ? input.closest('.ma-search__box').querySelector('[data-search-label]') : null;
+		function mark() {
+			var opts = list.querySelectorAll('[role="option"]');
+			opts.forEach(function (o, i) { o.setAttribute('aria-selected', i === active ? 'true' : 'false'); o.classList.toggle('is-active', i === active); });
+			if (active > -1 && opts[active]) { input.setAttribute('aria-activedescendant', opts[active].id); opts[active].scrollIntoView({ block: 'nearest' }); }
+			else input.removeAttribute('aria-activedescendant');
+		}
+		function render() {
+			var q = input.value;
+			var res = find(q);
+			active = -1;
+			if (label) label.textContent = q.trim() ? (res.length ? res.length + (res.length === 1 ? ' guide' : ' guides') : 'Ingen guides') : 'Nyeste guides';
+			list.innerHTML = res.length ? res.map(function (g) {
+				return '<li role="option" id="mas-' + (++uid) + '" aria-selected="false"><a href="' + esc(g.u) + '" tabindex="-1">'
+					+ '<span class="ma-thumb ma-thumb--l">' + (g.i ? '<img src="' + esc(g.i) + '" alt="" width="52" height="52">' : '') + '</span>'
+					+ '<span class="ma-res__txt"><small>' + esc(g.e) + ' · Reklamelinks</small><b>' + esc(g.t) + '</b></span></a></li>';
+			}).join('') : '<li class="ma-res__empty">Ingen guide matcher «' + esc(q) + '». Prøv fx serum, hår eller parfume.</li>';
+			list.dispatchEvent(new CustomEvent('ma:render', { detail: { q: q } }));
+		}
+		input.addEventListener('input', render);
+		input.addEventListener('keydown', function (e) {
+			var opts = list.querySelectorAll('[role="option"]');
+			if (e.key === 'ArrowDown' && opts.length) { e.preventDefault(); active = (active + 1) % opts.length; mark(); }
+			else if (e.key === 'ArrowUp' && opts.length) { e.preventDefault(); active = active <= 0 ? opts.length - 1 : active - 1; mark(); }
+			else if (e.key === 'Enter') {
+				var pick = opts[active > -1 ? active : 0];
+				if (pick) { e.preventDefault(); window.location.href = pick.querySelector('a').href; }
+			}
+		});
+		return render;
+	}
+	var overlay = document.getElementById('ma-search');
+	var opener = null;
+	if (overlay) {
+		var oInput = overlay.querySelector('input');
+		var oRender = bindSearch(oInput);
+		var openSearch = function (btn) {
+			opener = btn;
+			overlay.hidden = false;
+			document.documentElement.classList.add('ma-search-open');
+			if (oRender) oRender();
+			requestAnimationFrame(function () { overlay.classList.add('is-open'); oInput.focus(); });
+		};
+		var closeSearchBox = function () {
+			overlay.classList.remove('is-open');
+			document.documentElement.classList.remove('ma-search-open');
+			setTimeout(function () { if (!overlay.classList.contains('is-open')) overlay.hidden = true; }, reduce ? 0 : 180);
+			if (opener) opener.focus();
+		};
+		document.querySelectorAll('[data-search-open]').forEach(function (b) { b.addEventListener('click', function () { openSearch(b); }); });
+		overlay.querySelectorAll('[data-search-close]').forEach(function (b) { b.addEventListener('click', closeSearchBox); });
+		overlay.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape') { e.preventDefault(); closeSearchBox(); }
+			if (e.key === 'Tab') { // fokus bliver i dialogen
+				var f = overlay.querySelectorAll('input, button');
+				if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+				else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+			}
+		});
+		document.addEventListener('keydown', function (e) {
+			// "/" åbner søgningen (ikke når man skriver i et felt)
+			if (e.key === '/' && overlay.hidden && !/input|textarea|select/i.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); openSearch(document.querySelector('[data-search-open]')); }
+		});
+	}
+	// Søgefeltet i mobilmenuen: resultaterne erstatter emnekortene, mens der står noget i feltet.
+	var drInput = document.querySelector('.ma-dr [data-guide-search]');
+	if (drInput) {
+		var drRender = bindSearch(drInput);
+		var drList = document.getElementById(drInput.getAttribute('data-guide-search'));
+		var drTopics = document.querySelector('[data-dr-topics]');
+		drList.addEventListener('ma:render', function (e) {
+			var on = e.detail.q.trim() !== '';
+			drList.hidden = !on;
+			drInput.setAttribute('aria-expanded', on ? 'true' : 'false');
+			if (drTopics) drTopics.hidden = on;
+		});
+		if (drRender) drInput.addEventListener('focus', function () { if (drInput.value) drRender(); });
+	}
+
+	// Faner med scene-kort. Desktop: crossfade. Mobil: kortene ligger side om side (scroll-snap), og fanerne følger med.
+	document.querySelectorAll('[data-tabs]').forEach(function (bar) {
+		var tabs = Array.prototype.slice.call(bar.querySelectorAll('[role="tab"]'));
+		var scenes = document.querySelector('[data-scenes="' + bar.getAttribute('data-tabs') + '"]');
+		if (!scenes) return;
+		var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+		var cur = 0;
+		function centerTab(t) {
+			var left = t.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2;
+			bar.scrollTo({ left: Math.max(0, left), behavior: reduce ? 'auto' : 'smooth' });
+		}
+		function select(i, opts) {
+			opts = opts || {};
+			if (i < 0 || i >= tabs.length) return;
+			cur = i;
+			tabs.forEach(function (t, k) {
+				t.setAttribute('aria-selected', k === i ? 'true' : 'false');
+				t.tabIndex = k === i ? 0 : -1;
+				panels[k].classList.toggle('is-active', k === i);
+			});
+			if (opts.focus) tabs[i].focus({ preventScroll: true });
+			centerTab(tabs[i]);
+			if (narrow.matches && !opts.fromScroll) scenes.scrollTo({ left: panels[i].offsetLeft - scenes.offsetLeft - parseFloat(getComputedStyle(scenes).paddingLeft || 0), behavior: reduce ? 'auto' : 'smooth' });
+		}
+		tabs.forEach(function (t, k) { t.addEventListener('click', function () { select(k); }); });
+		bar.addEventListener('keydown', function (e) {
+			var map = { ArrowRight: cur + 1, ArrowLeft: cur - 1, Home: 0, End: tabs.length - 1 };
+			if (!(e.key in map)) return;
+			e.preventDefault();
+			var n = map[e.key];
+			if (n < 0) n = tabs.length - 1;
+			if (n >= tabs.length) n = 0;
+			select(n, { focus: true });
+		});
+		var tick = false;
+		scenes.addEventListener('scroll', function () {
+			if (!narrow.matches || tick) return;
+			tick = true;
+			requestAnimationFrame(function () {
+				tick = false;
+				var w = panels[0].getBoundingClientRect().width || 1;
+				var i = Math.round(scenes.scrollLeft / (w + 12));
+				if (i !== cur) select(Math.max(0, Math.min(tabs.length - 1, i)), { fromScroll: true });
+			});
+		}, { passive: true });
+	});
+
+	// Sektioner glider 12 px op og toner ind, når de kommer i syne (ikke ved reduceret bevægelse).
+	var rev = document.querySelectorAll('.ma-reveal');
+	if (rev.length && !reduce && 'IntersectionObserver' in window) {
+		var io = new IntersectionObserver(function (entries) {
+			entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
+		}, { rootMargin: '0px 0px -8% 0px' });
+		rev.forEach(function (el) {
+			if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-in');
+			else { el.classList.add('is-waiting'); io.observe(el); }
+		});
+	}
 })();

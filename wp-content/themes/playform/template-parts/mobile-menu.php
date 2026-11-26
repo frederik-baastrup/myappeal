@@ -1,128 +1,66 @@
 <?php
 /**
- * Mobilmenuen: en skuffe i fuld skærm med lag, man klikker sig ind i.
- * Forside → menupunkt (fx Træningsmaskiner) → kategori (fx Løbebånd: underkategorier, pris og tilbud).
- * Vises kun på smalle skærme. Uden JavaScript virker alle overskrifter stadig som links.
+ * Mobilmenuen (Myappeal, 26. nov. 2026): en skuffe i fuld skærm med lag.
+ * Forside: søgefelt, emnerne som fotokort (2 kolonner) og "Alle købsguides". Tryk på et emne → lag med emnets guides.
+ * Data fra playform_front_guides() (cachet). Uden JavaScript er emnekortene almindelige links til forsidens sektioner.
  */
 defined( 'ABSPATH' ) || exit;
 
-$menu    = playform_menu();
-$chev    = playform_icon( 'arrow-right', 16, 1.6 );
-$back    = playform_icon( 'arrow-left', 18, 1.6 );
-$row_img = static function ( string $src ): string {
-	return $src ? '<img class="dr__thumb" src="' . esc_url( $src ) . '" alt="" width="44" height="44" loading="lazy">' : '';
-};
-$promo   = static function ( string $url, string $label, string $img ) use ( $chev ): void {
-	?>
-	<a class="dr__promo" href="<?php echo esc_url( $url ); ?>">
-		<?php if ( $img ) : ?><img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy"><?php endif; ?>
-		<span class="dr__promo-body">
-			<span class="dr__promo-tag">Købsguides</span>
-			<span class="dr__promo-title">Alle købsguides</span>
-		</span>
-		<span class="dr__promo-arrow" aria-hidden="true"><?php echo $chev; // phpcs:ignore ?></span>
-	</a>
-	<?php
-};
-$head = static function ( string $title ) use ( $back ): void {
-	?>
-	<div class="dr__bar">
-		<button type="button" class="dr__back" data-back aria-label="Tilbage"><?php echo $back; // phpcs:ignore ?></button>
-		<span class="dr__heading"><?php echo esc_html( $title ); ?></span>
-	</div>
-	<?php
-};
+$fg   = playform_front_guides();
+$chev = playform_icon( 'arrow-right', 16, 1.4 );
+$back = playform_icon( 'arrow-left', 18, 1.4 );
 ?>
 <div class="dr-bg" data-close-bg hidden></div>
-<div class="dr" id="mobilmenu" aria-label="Menu" role="dialog" aria-modal="true" aria-hidden="true" inert>
+<div class="dr ma-dr" id="mobilmenu" aria-label="Menu" role="dialog" aria-modal="true" aria-hidden="true" inert>
 	<div class="dr__views">
-		<?php // Lag 1: menupunkterne ?>
 		<section class="dr__view is-active" data-view="root">
-			<span class="dr__label">Kategorier</span>
-			<ul class="dr__list dr__list--big">
-				<?php foreach ( $menu as $item ) : ?>
-					<li>
-						<a class="dr__row" href="<?php echo esc_url( $item['url'] ); ?>" data-to="m-<?php echo esc_attr( $item['slug'] ); ?>">
-							<?php echo $row_img( playform_category_thumb( $item['slug'] ) ); // phpcs:ignore ?>
-							<span class="dr__name"><?php echo esc_html( $item['label'] ); ?></span>
-							<?php echo $chev; // phpcs:ignore ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-				<li>
-					<a class="dr__row dr__row--sale" href="<?php echo esc_url( playform_guide_url() ); ?>">
-						<span class="dr__thumb dr__thumb--icon"><?php echo playform_icon( 'tag', 20, 1.5 ); // phpcs:ignore ?></span>
-						<span class="dr__name">Alle købsguides<small>Vores bud på de bedste produkter</small></span>
-						<?php echo $chev; // phpcs:ignore ?>
-					</a>
-				</li>
-			</ul>
+			<div class="ma-dr__search">
+				<?php echo playform_icon( 'search', 18, 1.4 ); // phpcs:ignore ?>
+				<input type="search" placeholder="Søg i guides" autocomplete="off" spellcheck="false" aria-label="Søg i købsguides" role="combobox" aria-expanded="false" aria-controls="ma-dr-results" aria-autocomplete="list" data-guide-search="ma-dr-results">
+			</div>
+			<ul class="ma-dr__results" id="ma-dr-results" role="listbox" aria-label="Guides" hidden></ul>
 
-			<span class="dr__label">Viden og hjælp</span>
-			<ul class="dr__list dr__list--small">
-				<li><a href="<?php echo esc_url( playform_guide_url() ); ?>">Købsguides</a></li>
-				<li><a href="<?php echo esc_url( home_url( '/viden/' ) ); ?>">Viden &amp; guides</a></li>
-				<li><a href="<?php echo esc_url( home_url( '/vores-butikker/' ) ); ?>">Vores butikker</a></li>
-				<li><a href="<?php echo esc_url( playform_how_url() ); ?>"><?php echo esc_html( playform_how_title() ); ?></a></li>
-				<li><a href="<?php echo esc_url( home_url( '/saadan-tjener-vi-penge/' ) ); ?>">Sådan tjener vi penge</a></li>
-			</ul>
+			<div class="ma-dr__topics" data-dr-topics>
+				<span class="ma-kicker">Emner</span>
+				<ul class="ma-dr__grid">
+					<?php foreach ( $fg['topics'] as $t => $topic ) : $g = $fg['guides'][ $topic['guides'][0] ]; $n = count( $topic['guides'] ); ?>
+						<li>
+							<a class="ma-dr__card" href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>" data-to="t-<?php echo esc_attr( $t ); ?>">
+								<?php if ( $g['img'] ) : ?><img src="<?php echo esc_url( $g['img'] ); ?>"<?php echo $g['img_srcset'] ? ' srcset="' . esc_attr( $g['img_srcset'] ) . '" sizes="50vw"' : ''; ?> alt="" loading="lazy"><?php endif; ?>
+								<span class="ma-dr__card-body"><b><?php echo esc_html( $topic['label'] ); ?></b><small><?php echo (int) $n; ?> <?php echo 1 === $n ? 'guide' : 'guides'; ?></small></span>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<a class="ma-btn ma-btn--ink ma-dr__all" href="<?php echo esc_url( playform_guide_url() ); ?>">Alle købsguides <?php echo $chev; // phpcs:ignore ?></a>
+
+				<ul class="ma-dr__links">
+					<li><a href="<?php echo esc_url( playform_method_url() ); ?>">Sådan vælger vi produkter</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/saadan-tjener-vi-penge/' ) ); ?>">Sådan tjener vi penge</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/viden/' ) ); ?>">Artikler</a></li>
+				</ul>
+			</div>
 		</section>
 
-		<?php // Lag 2: kategorierne under et menupunkt ?>
-		<?php foreach ( $menu as $item ) : ?>
-			<?php
-			$thumbs = array_map( static fn( $p ) => playform_category_thumb( $p['slug'] ), $item['primary'] );
-			// Billeder kun, når kategorierne har hver deres – ellers ser listen ens ud.
-			$use_thumbs = count( array_unique( array_filter( $thumbs ) ) ) === count( $item['primary'] );
-			?>
-			<section class="dr__view" data-view="m-<?php echo esc_attr( $item['slug'] ); ?>">
-				<?php $head( $item['label'] ); ?>
-				<a class="dr__all" href="<?php echo esc_url( $item['url'] ); ?>">Se alle <?php echo esc_html( mb_strtolower( $item['label'] ) ); ?><?php echo $chev; // phpcs:ignore ?></a>
-				<ul class="dr__list<?php echo $use_thumbs ? ' dr__list--big' : ''; ?>">
-					<?php foreach ( $item['primary'] as $i => $p ) : ?>
-						<?php $deeper = $p['subs'] || $p['prices']; ?>
+		<?php foreach ( $fg['topics'] as $t => $topic ) : ?>
+			<section class="dr__view" data-view="t-<?php echo esc_attr( $t ); ?>">
+				<div class="dr__bar">
+					<button type="button" class="dr__back" data-back aria-label="Tilbage"><?php echo $back; // phpcs:ignore ?></button>
+					<span class="dr__heading"><?php echo esc_html( $topic['label'] ); ?></span>
+				</div>
+				<ul class="ma-dr__guides">
+					<?php foreach ( $topic['guides'] as $id ) : $g = $fg['guides'][ $id ]; ?>
 						<li>
-							<a class="dr__row" href="<?php echo esc_url( $p['url'] ); ?>"<?php echo $deeper ? ' data-to="c-' . esc_attr( $p['slug'] ) . '"' : ''; ?>>
-								<?php echo $use_thumbs ? $row_img( $thumbs[ $i ] ) : ''; // phpcs:ignore ?>
-								<span class="dr__name"><?php echo esc_html( $p['label'] ); ?></span>
+							<a href="<?php echo esc_url( $g['url'] ); ?>">
+								<span class="ma-thumb ma-thumb--l"><?php if ( $g['thumb'] ) : ?><img src="<?php echo esc_url( $g['thumb'] ); ?>" alt="" width="52" height="52" loading="lazy"><?php endif; ?></span>
+								<span class="ma-dr__gname"><b><?php echo esc_html( $g['short'] ); ?></b><small>Top <?php echo (int) $g['n']; ?> · Reklamelinks</small></span>
 								<?php echo $chev; // phpcs:ignore ?>
 							</a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
-				<?php $promo( $item['tilbud'], $item['label'], playform_category_image( $item['slug'] ) ); ?>
+				<a class="ma-btn ma-btn--ghost ma-dr__all" href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>">Se emnet på forsiden <?php echo $chev; // phpcs:ignore ?></a>
 			</section>
-		<?php endforeach; ?>
-
-		<?php // Lag 3: én kategori – underkategorier, pris og tilbud ?>
-		<?php foreach ( $menu as $item ) : ?>
-			<?php foreach ( $item['primary'] as $p ) : ?>
-				<?php
-				if ( ! $p['subs'] && ! $p['prices'] ) {
-					continue;
-				}
-				?>
-				<section class="dr__view" data-view="c-<?php echo esc_attr( $p['slug'] ); ?>">
-					<?php $head( $p['label'] ); ?>
-					<a class="dr__all" href="<?php echo esc_url( $p['url'] ); ?>">Se alle <?php echo esc_html( mb_strtolower( $p['label'] ) ); ?><?php echo $chev; // phpcs:ignore ?></a>
-					<?php if ( $p['subs'] ) : ?>
-						<ul class="dr__list">
-							<?php foreach ( $p['subs'] as [ $label, $url ] ) : ?>
-								<li><a class="dr__row" href="<?php echo esc_url( $url ); ?>"><span class="dr__name"><?php echo esc_html( $label ); ?></span><?php echo $chev; // phpcs:ignore ?></a></li>
-							<?php endforeach; ?>
-						</ul>
-					<?php endif; ?>
-					<?php if ( $p['prices'] ) : ?>
-						<span class="dr__label">Pris</span>
-						<div class="dr__chips">
-							<?php foreach ( $p['prices'] as [ $label, $url ] ) : ?>
-								<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $label ); ?></a>
-							<?php endforeach; ?>
-						</div>
-					<?php endif; ?>
-					<?php $promo( $p['tilbud'], $p['label'], $p['img'] ); ?>
-				</section>
-			<?php endforeach; ?>
 		<?php endforeach; ?>
 	</div>
 
