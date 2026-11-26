@@ -59,7 +59,7 @@ $back = playform_icon( 'arrow-left', 18, 1.4 );
 						</li>
 					<?php endforeach; ?>
 				</ul>
-				<a class="ma-btn ma-btn--ghost ma-dr__all" href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>">Se emnet på forsiden <?php echo $chev; // phpcs:ignore ?></a>
+				<a class="ma-btn ma-btn--ink ma-dr__all" href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>">Alle guides om <?php echo esc_html( mb_strtolower( $topic['label'] ) ); ?> <?php echo $chev; // phpcs:ignore ?></a>
 			</section>
 		<?php endforeach; ?>
 	</div>

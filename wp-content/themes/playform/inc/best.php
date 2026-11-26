@@ -90,17 +90,17 @@ add_shortcode(
 		$picks = (array) get_post_meta( get_the_ID(), '_pf_picks', true );
 		$with  = count( array_filter( $picks, static fn( $p ) => ! empty( $p['reviews'] ) ) );
 		if ( $picks && $with === count( $picks ) ) {
-			$how = 'Vi har ikke testet produkterne selv. I stedet bygger vores valg på uafhængige anmeldelser fra andre medier (linket ved hvert produkt) og på butikkernes oplysninger om specifikationer, pris og garanti.';
+			$how = 'Vi har ikke selv afprøvet produkterne. Valgene bygger på uafhængige anmeldelser fra andre medier (linket ved hvert produkt) og på butikkernes produktdata om specifikationer, pris og garanti.';
 			$sel = 'anmeldelser og produktdata';
 		} elseif ( $with > 0 ) {
-			$how = 'Vi har ikke testet produkterne selv. Er et produkt anmeldt af et uafhængigt medie, linker vi til anmeldelsen ved produktet. De andre har vi selv vurderet ud fra butikkernes oplysninger om specifikationer, pris og garanti – det fremgår ved hvert produkt.';
+			$how = 'Vi har ikke selv afprøvet produkterne. Er et produkt anmeldt af et uafhængigt medie, linker vi til anmeldelsen ved produktet. De andre har vi selv vurderet ud fra butikkernes produktdata om specifikationer, pris og garanti – det fremgår ved hvert produkt.';
 			$sel = 'anmeldelser og produktdata';
 		} else {
-			$how = 'Vi har ikke testet produkterne selv. Valgene bygger på vores egen vurdering af specifikationer, materialer, pris og garanti, som butikkerne oplyser dem.';
+			$how = 'Vi har ikke selv afprøvet produkterne. Valgene bygger på vores egen vurdering af specifikationer, materialer, pris og garanti ud fra butikkernes produktdata.';
 			$sel = 'produktdata';
 		}
 		return '<aside class="method"><span class="method__title">' . playform_icon( 'check', 16, 1.6 ) . 'Sådan har vi valgt</span>'
-			. '<p>' . $how . ' Vi anvender kunstig intelligens til at finde frem i butikkernes oplysninger og skrive teksten, og hvert tal er tjekket mod dem.' . ' <a href="' . esc_url( playform_method_url() ) . '">Sådan vælger vi produkter</a>.</p>'
+			. '<p>' . $how . ' Vi anvender kunstig intelligens til at finde frem i butikkernes produktdata og skrive teksten, og hvert tal er tjekket mod dem.' . ' <a href="' . esc_url( playform_method_url() ) . '">Sådan vælger vi produkter</a>.</p>'
 			. '<p>Priser og lager opdateres hver dag. Vi tjener provision, når du køber gennem vores links, men det er ' . $sel . ', der afgør valgene – ikke provisionen. <a href="' . $money . '">Sådan tjener vi penge</a>.</p></aside>';
 	}
 );
@@ -253,22 +253,50 @@ add_shortcode(
 	}
 );
 
-// Sammenligning af de 3 valg.
+// Sammenligning af valgene. Kolonner uden indhold (Fakta "–" overalt) eller med samme værdi i alle rækker
+// (Grundlag "Vores vurdering") vises ikke. data-label bruges, når rækkerne bliver kort på mobil.
 add_shortcode(
 	'fitbase_tabel',
 	static function (): string {
-		$rows = '';
+		$rows = [];
 		foreach ( playform_picks() as $i => $pick ) {
 			$p = playform_pick_product( $pick );
 			if ( ! $p ) {
 				continue;
 			}
-			$d     = playform_card_data( $p );
-			$rows .= '<tr><td><a href="#valg-' . ( $i + 1 ) . '">' . esc_html( $d['name'] ) . '</a></td><td>' . esc_html( $pick['role'] ?? '' ) . '</td><td>'
-				. ( $d['in_stock'] ? esc_html( playform_kr( $d['price'] ) ) : 'Ikke på lager' ) . '</td><td>' . esc_html( implode( ' · ', playform_pick_facts( $p->get_id() ) ) ?: '–' ) . '</td><td>'
-				. ( empty( $pick['reviews'] ) ? 'Vores vurdering' : 'Anmeldt' ) . '</td></tr>';
+			$d      = playform_card_data( $p );
+			$rows[] = [
+				'<a href="#valg-' . ( $i + 1 ) . '"><span class="cmp__n">' . ( $i + 1 ) . '</span>' . esc_html( $d['name'] ) . '</a>',
+				esc_html( $pick['role'] ?? '' ),
+				$d['in_stock'] ? '<b>' . esc_html( playform_kr( $d['price'] ) ) . '</b>' : 'Ikke på lager',
+				esc_html( implode( ' · ', playform_pick_facts( $p->get_id() ) ) ),
+				empty( $pick['reviews'] ) ? 'Vores vurdering' : 'Anmeldt',
+			];
 		}
-		return $rows ? '<table><thead><tr><th>Model</th><th>Bedst til</th><th>Aktuel pris</th><th>Fakta</th><th>Grundlag</th></tr></thead><tbody>' . $rows . '</tbody></table>' : '';
+		if ( ! $rows ) {
+			return '';
+		}
+		$heads = [ 'Model', 'Bedst til', 'Aktuel pris', 'Fakta', 'Grundlag' ];
+		$keep  = [ 0, 1, 2 ];
+		if ( array_filter( array_column( $rows, 3 ) ) ) {
+			$keep[] = 3;
+		}
+		if ( count( array_unique( array_column( $rows, 4 ) ) ) > 1 ) {
+			$keep[] = 4;
+		}
+		$h = '<table class="cmp"><thead><tr>';
+		foreach ( $keep as $k ) {
+			$h .= '<th>' . $heads[ $k ] . '</th>';
+		}
+		$h .= '</tr></thead><tbody>';
+		foreach ( $rows as $r ) {
+			$h .= '<tr>';
+			foreach ( $keep as $k ) {
+				$h .= '<td data-label="' . esc_attr( $heads[ $k ] ) . '">' . ( '' !== $r[ $k ] ? $r[ $k ] : '–' ) . '</td>';
+			}
+			$h .= '</tr>';
+		}
+		return $h . '</tbody></table>';
 	}
 );
 
@@ -636,7 +664,7 @@ function playform_guide_test_note( array $a ): string {
 	}
 	// Overskriften uden ordet "test" (Google viser ofte overskrifter i søgeresultatet – jf. Forbrugerombudsmandens sag mod Obsidian Media).
 	$h  = '<h2>Har vi selv prøvet modellerne?</h2>' . "\n";
-	$h .= '<p>Mange googler <b>' . $kw . ' test</b> eller "bedste ' . playform_best_kw( $kw ) . ' i test", inden de vælger. Det her er ikke en ' . $kw . ' test: Produkterne har vi ikke testet selv. '
+	$h .= '<p>Mange googler <b>' . $kw . ' test</b> eller "bedste ' . playform_best_kw( $kw ) . ' i test", inden de vælger. Det her er ikke en ' . $kw . ' test: Produkterne har vi ikke selv afprøvet. '
 		. 'Forarbejdet har vi til gengæld gjort for dig – vores bud på bedste ' . playform_best_kw( $kw ) . ' bygger på butikkernes produktdata, aktuelle priser og lagerstatus'
 		. ( $rev ? ' samt uafhængige anmeldelser og tests fra andre medier af nøjagtig de samme modeller' : '' ) . ".</p>\n";
 	$h .= '<p>' . ( $rev

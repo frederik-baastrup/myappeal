@@ -9,9 +9,10 @@ defined( 'ABSPATH' ) || exit;
 /** Emner i menu og på forsiden: slug => [navn, regex mod guidens slug]. Første match vinder. */
 function playform_guide_emner(): array {
 	return [
-		'makeup'   => [ 'Makeup', '~mascara|foundation|concealer|bb-cream|spejl|primer|laeb|eyeliner|pudder~' ],
-		'parfume'  => [ 'Parfume', '~parfume|duft~' ],
-		'haar'     => [ 'Hår', '~haar|toershampoo|glattejern|kroellejern|foentoerrer|airstyler|shampoo|balsam~' ],
+		// Parfume står sammen med makeup, indtil der er flere parfumeguides (kun én 26. nov. 2026).
+		'makeup'   => [ 'Makeup & parfume', '~mascara|foundation|concealer|bb-cream|spejl|primer|laeb|eyeliner|pudder|parfume|duft~' ],
+		// "haarfjerner(-til-ansigtet)" er hudpleje, ikke hår.
+		'haar'     => [ 'Hår', '~haar(?!fjern)|toershampoo|glattejern|kroellejern|foentoerrer|airstyler|shampoo|balsam~' ],
 		'krop'     => [ 'Krop & tænder', '~bodylotion|selvbruner|hudpleje-krop|tandboerste|tand|ipl|vandflosser|flosser|epilator|ladyshave~' ],
 		'hudpleje' => [ 'Hudpleje', '~.~' ],
 	];

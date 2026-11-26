@@ -499,7 +499,15 @@ document.addEventListener('click', function (e) {
 	var items = Array.prototype.slice.call(document.querySelectorAll('[data-mn]'));
 	var lastPointer = 'mouse';
 	document.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType || 'mouse'; }, true);
+	var nav = document.querySelector('.ma-nav');
+	var swT;
 	function setOpen(item, open) {
+		if (open && nav && items.some(function (o) { return o !== item && o.classList.contains('is-open'); })) {
+			// Skift mellem to emner: ingen toning, så de to paneler ikke ligger halvgennemsigtige oven i hinanden
+			nav.classList.add('is-switching');
+			clearTimeout(swT);
+			swT = setTimeout(function () { nav.classList.remove('is-switching'); }, 220);
+		}
 		if (open) items.forEach(function (o) { if (o !== item) setOpen(o, false); });
 		item.classList.toggle('is-open', open);
 		var link = item.querySelector('.ma-nav__link');
@@ -533,7 +541,7 @@ document.addEventListener('click', function (e) {
 	var guides = [];
 	try { guides = dataEl ? JSON.parse(dataEl.textContent) : []; } catch (err) { guides = []; }
 	var norm = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-̂̄-̉̋-ͯ]/g, ''); };
-	guides.forEach(function (g) { g.hay = norm(g.t + ' ' + g.s + ' ' + g.e + ' ' + g.k); g.sn = norm(g.s); });
+	guides.forEach(function (g) { g.hay = norm(g.t + ' ' + (g.x || '') + ' ' + g.s + ' ' + g.e + ' ' + g.k); g.sn = norm(g.s); });
 	function find(q) {
 		q = norm(q).trim();
 		if (!q) return guides.slice(0, 6);

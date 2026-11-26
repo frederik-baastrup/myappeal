@@ -12,7 +12,6 @@ $fg     = playform_front_guides();
 $guides = $fg['guides'];
 $topics = $fg['topics'];
 $arrow  = playform_icon( 'arrow-right', 16, 1.6 );
-$latest = playform_front_latest( 13 );
 $money  = home_url( '/saadan-tjener-vi-penge/' );
 $plural = static fn( int $n ): string => $n . ' ' . ( 1 === $n ? 'guide' : 'guides' );
 $img    = static function ( array $g, string $sizes, string $class = '' ): string {
@@ -42,8 +41,25 @@ $img    = static function ( array $g, string $sizes, string $class = '' ): strin
 	</div>
 </section>
 
-<?php if ( count( $latest ) >= 3 ) : ?>
-	<?php $feat = array_slice( $latest, 0, 3, true ); ?>
+<?php
+// Udvalgt: de nyeste guides med fulde valg – men ikke dem, der allerede står som første fane i deres emne.
+$firsts = [];
+foreach ( $topics as $t => $topic ) {
+	foreach ( $topic['guides'] as $id ) {
+		if ( ! empty( $guides[ $id ]['front'] ) ) {
+			$firsts[] = $id;
+			break;
+		}
+	}
+}
+$feat = [];
+foreach ( playform_front_latest( 999 ) as $id => $g ) {
+	if ( ! empty( $g['front'] ) && ! in_array( $id, $firsts, true ) && count( $feat ) < 3 ) {
+		$feat[ $id ] = $g;
+	}
+}
+?>
+<?php if ( count( $feat ) === 3 ) : ?>
 	<section class="ma-sec ma-sec--first ma-reveal" aria-labelledby="h-udvalgt">
 		<div class="wrap">
 			<div class="ma-sec__head">
@@ -63,8 +79,8 @@ $img    = static function ( array $g, string $sizes, string $class = '' ): strin
 						<span class="ma-fcard__img"><?php echo $img( $g, $big ? '(max-width: 900px) 100vw, 840px' : '(max-width: 900px) 100vw, 420px' ); // phpcs:ignore ?></span>
 						<span class="ma-fcard__body">
 							<span class="ma-kicker ma-kicker--light"><?php echo esc_html( $topics[ $g['topic'] ]['label'] ?? '' ); ?> · Top <?php echo (int) $g['n']; ?></span>
-							<span class="ma-fcard__title"><?php echo esc_html( $g['title'] ); ?></span>
-							<?php if ( $big && $g['excerpt'] ) : ?><span class="ma-fcard__excerpt"><?php echo esc_html( $g['excerpt'] ); ?></span><?php endif; ?>
+							<span class="ma-fcard__title"><?php echo esc_html( $g['head'] ); ?></span>
+							<?php if ( $g['excerpt'] ) : ?><span class="ma-fcard__excerpt"><?php echo esc_html( $g['excerpt'] ); ?></span><?php endif; ?>
 							<span class="ma-fcard__meta"><span class="ma-adtag ma-adtag--light">Reklamelinks</span><span class="ma-fcard__go">Læs guiden <?php echo $arrow; // phpcs:ignore ?></span></span>
 						</span>
 					</a>
@@ -79,14 +95,15 @@ $img    = static function ( array $g, string $sizes, string $class = '' ): strin
 <?php
 $k = 0;
 foreach ( $topics as $t => $topic ) :
-	$ids   = $topic['guides'];
+	$all   = $topic['guides'];
+	$ids   = array_values( array_filter( $all, static fn( $id ) => ! empty( $guides[ $id ]['front'] ) ) );
 	$blush = 0 === $k++ % 2;
 	$lc    = mb_strtolower( $topic['label'] );
 	?>
 	<section class="ma-sec ma-topic<?php echo $blush ? ' ma-sec--blush' : ''; ?> ma-reveal" id="<?php echo esc_attr( $t ); ?>" aria-labelledby="h-<?php echo esc_attr( $t ); ?>">
 		<div class="wrap">
 			<div class="ma-topic__head">
-				<p class="ma-kicker"><?php echo esc_html( $topic['label'] ); ?> · <b><?php echo esc_html( $plural( count( $ids ) ) ); ?></b></p>
+				<p class="ma-kicker"><?php echo esc_html( $topic['label'] ); ?> · <b><?php echo esc_html( $plural( count( $all ) ) ); ?></b></p>
 				<h2 id="h-<?php echo esc_attr( $t ); ?>"><?php echo esc_html( $topic['label'] ); ?></h2>
 			</div>
 			<?php if ( count( $ids ) > 1 ) : ?>
@@ -102,16 +119,15 @@ foreach ( $topics as $t => $topic ) :
 						<a class="ma-scene__media" href="<?php echo esc_url( $g['url'] ); ?>" tabindex="-1" aria-hidden="true"><?php echo $img( $g, '(max-width: 760px) 90vw, 480px' ); // phpcs:ignore ?></a>
 						<div class="ma-scene__body">
 							<p class="ma-kicker"><span class="ma-num">Top <?php echo (int) $g['n']; ?></span> · <?php echo esc_html( $g['short'] ); ?></p>
-							<h3 class="ma-scene__title"><a href="<?php echo esc_url( $g['url'] ); ?>"><?php echo esc_html( $g['title'] ); ?></a></h3>
+							<h3 class="ma-scene__title"><a href="<?php echo esc_url( $g['url'] ); ?>"><?php echo esc_html( $g['head'] ); ?></a></h3>
 							<?php if ( $g['excerpt'] ) : ?><p class="ma-scene__excerpt"><?php echo esc_html( $g['excerpt'] ); ?></p><?php endif; ?>
 							<?php if ( $g['top'] ) : ?>
-								<p class="ma-scene__lbl">Vores top <?php echo count( $g['top'] ); ?></p>
+								<p class="ma-scene__lbl">Fra vores top <?php echo (int) $g['n']; ?></p>
 								<ol class="ma-top3">
 									<?php foreach ( $g['top'] as $r => $row ) : ?>
 										<li>
-											<span class="ma-top3__img"><?php if ( $row['img'] ) : ?><img src="<?php echo esc_url( $row['img'] ); ?>" alt="" width="56" height="56" loading="lazy"><?php endif; ?><i><?php echo (int) $r + 1; ?></i></span>
-											<span class="ma-top3__txt"><small><?php echo esc_html( $row['role'] ); ?></small><b><?php echo esc_html( $row['name'] ); ?></b></span>
-											<span class="ma-top3__price"><?php echo esc_html( playform_front_price( (float) $row['price'] ) ?: 'Ikke på lager' ); ?></span>
+											<span class="ma-top3__img"><img src="<?php echo esc_url( $row['img'] ); ?>" alt="" width="72" height="72" loading="lazy"><i><?php echo (int) $row['rank']; ?></i></span>
+											<span class="ma-top3__txt"><small><?php echo esc_html( $row['role'] ); ?></small><b><?php echo esc_html( $row['name'] ); ?></b><span class="ma-top3__price"><?php echo esc_html( playform_front_price( (float) $row['price'] ) ); ?></span></span>
 										</li>
 									<?php endforeach; ?>
 								</ol>
@@ -124,11 +140,11 @@ foreach ( $topics as $t => $topic ) :
 					</article>
 				<?php endforeach; ?>
 			</div>
-			<?php if ( count( $ids ) > 1 ) : ?>
+			<?php if ( count( $all ) > 1 ) : ?>
 				<details class="ma-all">
-					<summary>Alle <?php echo esc_html( $plural( count( $ids ) ) ); ?> om <?php echo esc_html( $lc ); ?> <?php echo playform_icon( 'chevron', 16, 1.6 ); // phpcs:ignore ?></summary>
+					<summary>Alle <?php echo esc_html( $plural( count( $all ) ) ); ?> om <?php echo esc_html( $lc ); ?> <?php echo playform_icon( 'chevron', 16, 1.6 ); // phpcs:ignore ?></summary>
 					<ul class="ma-all__grid">
-						<?php foreach ( $ids as $id ) : $g = $guides[ $id ]; ?>
+						<?php foreach ( $all as $id ) : $g = $guides[ $id ]; ?>
 							<li><a href="<?php echo esc_url( $g['url'] ); ?>"><span class="ma-thumb ma-thumb--l"><?php if ( $g['thumb'] ) : ?><img src="<?php echo esc_url( $g['thumb'] ); ?>" alt="" width="52" height="52" loading="lazy"><?php endif; ?></span><span><b><?php echo esc_html( $g['short'] ); ?></b><small>Top <?php echo (int) $g['n']; ?> · Reklamelinks</small></span></a></li>
 						<?php endforeach; ?>
 					</ul>
@@ -151,7 +167,7 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 		<div class="wrap">
 			<div class="ma-sec__head">
 				<div>
-					<p class="ma-kicker"><span class="ma-num">Nr. 1</span> · <?php echo count( $shelf ); ?> guides</p>
+					<p class="ma-kicker"><span class="ma-num">Nr. 1</span> · <?php echo count( $shelf ); ?> udvalgte</p>
 					<h2 id="h-nr1">Vores nr. 1 i hver guide</h2>
 					<p class="ma-sec__sub">Det valg, der står øverst i guiden. Ikke afprøvet af os – valgt ud fra produktdata. <span class="ma-adtag">Reklamelinks</span></p>
 				</div>
@@ -160,7 +176,8 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 					<button type="button" data-dir="1" aria-label="Næste"><?php echo playform_icon( 'arrow-right', 18, 1.4 ); // phpcs:ignore ?></button>
 				</div>
 			</div>
-			<ul class="ma-shelf__row" id="ma-shelf">
+		</div>
+		<ul class="ma-shelf__row" id="ma-shelf">
 				<?php foreach ( $shelf as $g ) : $p = $g['nr1']; ?>
 					<li class="slider__item">
 						<a class="ma-pcard" href="<?php echo esc_url( $g['url'] ); ?>">
@@ -171,8 +188,7 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 						</a>
 					</li>
 				<?php endforeach; ?>
-			</ul>
-		</div>
+		</ul>
 	</section>
 <?php endif; ?>
 
@@ -194,7 +210,7 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 				<p>Under hvert valg ser du prisen hos de butikker, vi samarbejder med. Priser og lager opdateres hver dag.</p>
 			</li>
 			<li>
-				<?php echo playform_icon( 'eye', 28, 1.4 ); // phpcs:ignore ?>
+				<?php echo playform_icon( 'heart', 28, 1.4 ); // phpcs:ignore ?>
 				<h3>Ingen egen afprøvning</h3>
 				<p>Vi har ikke selv prøvet produkterne – og det siger vi ærligt ved hvert eneste valg, så du ved, hvad anbefalingen bygger på.</p>
 			</li>
@@ -203,7 +219,7 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 	</div>
 </section>
 
-<?php $more = array_slice( $latest, 3, 10, true ); ?>
+<?php $more = array_slice( array_diff_key( playform_front_latest( 999 ), $feat ), 0, 8, true ); ?>
 <?php if ( $more ) : ?>
 	<section class="ma-sec ma-reveal" aria-labelledby="h-nyeste">
 		<div class="wrap">
@@ -220,8 +236,9 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 						<a href="<?php echo esc_url( $g['url'] ); ?>">
 							<span class="ma-thumb ma-thumb--xl"><?php if ( $g['thumb'] ) : ?><img src="<?php echo esc_url( $g['thumb'] ); ?>" alt="" width="72" height="72" loading="lazy"><?php endif; ?></span>
 							<span class="ma-latest__txt">
-								<span class="ma-latest__meta"><time datetime="<?php echo esc_attr( $g['date'] ); ?>"><?php echo esc_html( playform_front_date( $g['date'] ) ); ?></time><i></i><?php echo esc_html( $topics[ $g['topic'] ]['label'] ?? '' ); ?><i></i><span class="ma-adtag">Reklamelinks</span></span>
-								<b><?php echo esc_html( $g['title'] ); ?></b>
+								<span class="ma-latest__meta"><span class="ma-kicker"><?php echo esc_html( $topics[ $g['topic'] ]['label'] ?? '' ); ?> · <span class="ma-num">Top <?php echo (int) $g['n']; ?></span></span><span class="ma-adtag">Reklamelinks</span></span>
+								<b><?php echo esc_html( $g['head'] ); ?></b>
+								<?php if ( $g['excerpt'] ) : ?><small><?php echo esc_html( $g['excerpt'] ); ?></small><?php endif; ?>
 							</span>
 							<?php echo $arrow; // phpcs:ignore ?>
 						</a>

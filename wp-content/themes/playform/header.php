@@ -70,7 +70,7 @@ $pf_usps  = [
 										<span class="ma-mega__img"><?php if ( $feat['img'] ) : ?><img src="<?php echo esc_url( $feat['img'] ); ?>" alt="" loading="lazy"><?php endif; ?></span>
 										<span class="ma-mega__body">
 											<span class="ma-kicker ma-kicker--light">Nyeste guide</span>
-											<span class="ma-mega__title"><?php echo esc_html( $feat['title'] ); ?></span>
+											<span class="ma-mega__title"><?php echo esc_html( $feat['head'] ); ?></span><?php if ( $feat['excerpt'] ) : ?><span class="ma-mega__sub"><?php echo esc_html( $feat['excerpt'] ); ?></span><?php endif; ?>
 											<span class="ma-mega__cta">Se top <?php echo (int) $feat['n']; ?> <?php echo playform_icon( 'arrow-right', 14, 1.6 ); // phpcs:ignore ?></span>
 										</span>
 									</a>

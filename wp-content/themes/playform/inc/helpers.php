@@ -52,6 +52,7 @@ function playform_icon( string $name, int $size = 20, float $stroke = 1.6 ): str
 		'book'        => '<path d="M12 6.5C10.5 5.2 8.2 4.5 4 4.5v13c4.2 0 6.5.7 8 2 1.5-1.3 3.8-2 8-2v-13c-4.2 0-6.5.7-8 2z"/><path d="M12 6.5v13"/>',
 		'doc'         => '<path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M10 12.5h5M10 16h5"/>',
 		'compare'     => '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+		'heart'       => '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/>',
 		'eye'         => '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
 		'product'     => '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-4.5-4.5-8 8"/>',
 	];
@@ -70,6 +71,11 @@ function playform_shop_name( string $key ): string {
 
 function playform_shop_names(): array {
 	return class_exists( '\Playform\Feeds\Config' ) ? array_column( \Playform\Feeds\Config::shops(), 'name' ) : [];
+}
+
+/** Feedstøj i produktnavne væk ved visning: "(1 stk)", "- 1 stk.", "1 stk." til sidst. */
+function playform_clean_name( string $name ): string {
+	return trim( (string) preg_replace( '~\s*[-–(]?\s*1\s*stk\.?\)?\s*$~iu', '', $name ) );
 }
 
 /** Data til et produktkort, så kortet ser ens ud overalt. */
@@ -94,7 +100,7 @@ function playform_card_data( WC_Product $p ): array {
 	}
 	return [
 		'url'      => get_permalink( $id ),
-		'name'     => $p->get_name(),
+		'name'     => playform_clean_name( $p->get_name() ),
 		'brand'    => $brand,
 		'image'    => class_exists( '\\Playform\\Feeds\\Frontend' ) ? \Playform\Feeds\Frontend::image_url( $id ) : (string) get_post_meta( $id, '_pf_image', true ),
 		'price'    => (float) $p->get_price(),

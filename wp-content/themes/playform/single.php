@@ -15,7 +15,7 @@ while ( have_posts() ) :
 	$updated       = get_the_modified_date( 'j. F Y' );
 	$author        = playform_author( (int) get_the_author_meta( 'ID' ) );
 	?>
-	<article class="guide">
+	<article class="guide<?php echo playform_picks() ? ' guide--best' : ''; ?>">
 		<header class="wrap guide__head">
 			<?php
 			$is_best = (int) ( playform_root_posts()[ get_post_field( 'post_name' ) ] ?? 0 ) === get_the_ID();
@@ -24,16 +24,23 @@ while ( have_posts() ) :
 			echo '<div class="guide__crumbrow">';
 			playform_breadcrumbs( [ [ 'Forside', home_url( '/' ) ], $is_best ? [ 'Købsguides', playform_guide_url() ] : [ 'Viden & guides', $blog ], [ get_the_title(), '' ] ] );
 			if ( $pf_ad ) {
-				echo '<a class="ad-chip" href="' . esc_url( home_url( '/saadan-tjener-vi-penge/' ) ) . '" title="Artiklen indeholder reklamelinks. Vi får provision, hvis du køber via dem.">Annonce</a>';
+				echo '<a class="ad-chip" href="' . esc_url( home_url( '/saadan-tjener-vi-penge/' ) ) . '" title="Artiklen indeholder reklamelinks. Vi får provision, hvis du køber via dem.">Reklamelinks</a>';
 			}
 			echo '</div>';
 			?>
 			<?php if ( get_post_meta( get_the_ID(), '_pf_hidden', true ) || get_post_meta( get_the_ID(), '_pf_sponsored', true ) ) : // Solgte/sponsorerede artikler skal tydeligt markeres som reklame (markedsføringsloven § 6, stk. 4). ?>
 				<p class="sponsored-note"><b>Annonce</b>Dette er sponsoreret indhold med betalte links.</p>
 			<?php endif; ?>
+			<?php
+			$pf_fg_g = playform_picks() ? ( playform_front_guides()['guides'][ get_the_ID() ] ?? null ) : null;
+			if ( $pf_fg_g ) :
+				$pf_topic = playform_front_guides()['topics'][ $pf_fg_g['topic'] ]['label'] ?? '';
+				?>
+				<p class="ma-kicker guide__kicker"><a href="<?php echo esc_url( home_url( '/#' . $pf_fg_g['topic'] ) ); ?>"><?php echo esc_html( $pf_topic ); ?></a> · <span class="ma-num">Top <?php echo (int) $pf_fg_g['n']; ?></span></p>
+			<?php endif; ?>
 			<h1><?php the_title(); ?></h1>
 			<?php if ( has_excerpt() ) : ?><p class="guide__lead"><?php echo esc_html( get_the_excerpt() ); ?></p><?php endif; ?>
-			<?php if ( playform_picks() && function_exists( 'playform_method_url' ) ) : // kort note om udvælgelsen lige under introen ?><p class="guide__basis"><?php echo playform_icon( 'info', 15, 1.6 ); // phpcs:ignore ?><span>Vores bud bygger på produktdata, pris og garanti – vi har ikke selv testet dem. <a href="<?php echo esc_url( playform_method_url() ); ?>">Læs mere</a></span></p><?php endif; ?>
+			<?php if ( playform_picks() && function_exists( 'playform_method_url' ) ) : // kort note om udvælgelsen lige under introen ?><p class="guide__basis"><?php echo playform_icon( 'info', 15, 1.6 ); // phpcs:ignore ?><span>Vores bud bygger på produktdata, pris og garanti – vi har ikke selv afprøvet dem. <a href="<?php echo esc_url( playform_method_url() ); ?>">Læs mere</a></span></p><?php endif; ?>
 			<?php $checked = (string) get_post_meta( get_the_ID(), '_pf_checked', true ); ?>
 			<div class="guide__meta">
 				<a class="byline" href="<?php echo esc_url( $author['url'] ); ?>" rel="author">
@@ -50,7 +57,7 @@ while ( have_posts() ) :
 						<li><?php echo playform_icon( 'refresh', 15, 1.4 ); // phpcs:ignore ?><span>Produkter tjekket d. <?php echo esc_html( wp_date( 'j. M', strtotime( $checked ) ) ); ?></span></li>
 					<?php endif; ?>
 				</ul>
-				<?php if ( playform_picks() || str_contains( $html, 'sponsored' ) || str_contains( $html, 'pcard' ) ) : ?>
+				<?php if ( ! playform_picks() && ( str_contains( $html, 'sponsored' ) || str_contains( $html, 'pcard' ) ) ) : // købsguides har allerede mærket "Reklamelinks" ved brødkrummerne ?>
 					<a class="guide__trust" href="<?php echo esc_url( home_url( '/saadan-tjener-vi-penge/' ) ); ?>"><?php echo playform_icon( 'tag', 14, 1.6 ); // phpcs:ignore ?><span class="gt-long">Indeholder affiliate-links</span><span class="gt-short">Affiliate-links</span></a>
 				<?php endif; ?>
 				</div>
@@ -79,8 +86,7 @@ while ( have_posts() ) :
 				<?php endif; ?>
 				<?php echo $html; // phpcs:ignore -- indholdet er allerede filtreret af the_content ?>
 				<?php
-				$n_guides = (int) count_user_posts( $author['id'], 'post', true );
-				$n_prods  = (int) wp_count_posts( 'product' )->publish;
+				$n_guides = (int) playform_front_guides()['count'];
 				$n_shops  = count( playform_shop_names() );
 				?>
 				<aside class="author-card" aria-label="Om forfatteren">
@@ -95,9 +101,9 @@ while ( have_posts() ) :
 					</div>
 					<p class="author-card__bio"><?php echo esc_html( $author['bio'] ); ?></p>
 					<ul class="author-card__stats">
-						<li><b><?php echo esc_html( number_format( $n_guides, 0, ',', '.' ) ); ?></b><span>guides skrevet</span></li>
-						<li><b><?php echo esc_html( number_format( $n_prods, 0, ',', '.' ) ); ?></b><span>produkter i oversigten</span></li>
-						<li><b><?php echo esc_html( (string) $n_shops ); ?></b><span>danske webshops</span></li>
+						<li><b><?php echo esc_html( number_format( $n_guides, 0, ',', '.' ) ); ?></b><span>købsguides</span></li>
+						<li><b><?php echo esc_html( (string) $n_shops ); ?></b><span>butikker, vi samarbejder med</span></li>
+						<li><b>Dagligt</b><span>opdaterede priser</span></li>
 					</ul>
 					<ul class="author-card__rules">
 						<?php if ( ! get_post_meta( get_the_ID(), '_pf_hidden', true ) && ! get_post_meta( get_the_ID(), '_pf_sponsored', true ) ) : ?><li><?php echo playform_icon( 'check', 14, 1.8 ); // phpcs:ignore ?>Ingen betalte placeringer</li><?php endif; ?>
@@ -110,20 +116,49 @@ while ( have_posts() ) :
 	</article>
 
 	<?php
-	$more = get_posts( [ 'post_type' => 'post', 'posts_per_page' => 3, 'post__not_in' => [ get_the_ID() ] ] );
-	if ( $more ) :
+	$pf_all = playform_front_guides();
+	if ( $pf_fg_g ) :
+		$pf_same = array_values( array_filter( $pf_all['topics'][ $pf_fg_g['topic'] ]['guides'] ?? [], static fn( $id ) => $id !== get_the_ID() ) );
+		$pf_ids  = array_slice( array_merge( $pf_same, array_diff( array_keys( playform_front_latest( 8 ) ), $pf_same, [ get_the_ID() ] ) ), 0, 3 );
 		?>
-		<section class="wrap section guide-more">
-			<div class="section__head"><h2>Flere guides</h2><span class="section__line"></span><a class="section__more" href="<?php echo esc_url( $blog ); ?>">Se alle</a></div>
-			<div class="guides-list">
-				<?php foreach ( $more as $m ) : ?>
-					<a href="<?php echo esc_url( get_permalink( $m ) ); ?>" class="guide-row">
-						<img src="<?php echo esc_url( get_the_post_thumbnail_url( $m, 'thumbnail' ) ?: playform_asset( 'cat-placeholder.svg' ) ); ?>" alt="" loading="lazy">
-						<span><b><?php echo esc_html( get_the_title( $m ) ); ?></b><span><?php echo esc_html( get_the_date( 'j. M Y', $m ) . ( playform_post_ad_label( $m ) ? ' · ' . playform_post_ad_label( $m ) : '' ) ); ?></span></span>
-					</a>
-				<?php endforeach; ?>
+		<section class="ma-sec ma-sec--blush guide-next" aria-labelledby="h-flere">
+			<div class="wrap">
+				<div class="ma-sec__head">
+					<div>
+						<p class="ma-kicker">Læs videre</p>
+						<h2 id="h-flere">Flere guides om <?php echo esc_html( mb_strtolower( $pf_topic ) ); ?></h2>
+					</div>
+					<a class="ma-link" href="<?php echo esc_url( playform_guide_url() ); ?>">Alle <?php echo (int) $pf_all['count']; ?> guides <?php echo playform_icon( 'arrow-right', 16, 1.6 ); // phpcs:ignore ?></a>
+				</div>
+				<div class="ma-next">
+					<?php foreach ( $pf_ids as $id ) : $g = $pf_all['guides'][ $id ]; ?>
+						<a class="ma-ncard" href="<?php echo esc_url( $g['url'] ); ?>">
+							<span class="ma-ncard__img"><?php if ( $g['img'] ) : ?><img src="<?php echo esc_url( $g['img'] ); ?>"<?php echo $g['img_srcset'] ? ' srcset="' . esc_attr( $g['img_srcset'] ) . '" sizes="(max-width: 760px) 100vw, 400px"' : ''; ?> alt="" loading="lazy"><?php endif; ?></span>
+							<span class="ma-kicker"><?php echo esc_html( $pf_all['topics'][ $g['topic'] ]['label'] ?? '' ); ?> · <span class="ma-num">Top <?php echo (int) $g['n']; ?></span></span>
+							<span class="ma-ncard__title"><?php echo esc_html( $g['head'] ); ?></span>
+							<span class="ma-adtag">Reklamelinks</span>
+						</a>
+					<?php endforeach; ?>
+				</div>
 			</div>
 		</section>
+	<?php else : ?>
+		<?php
+		$more = get_posts( [ 'post_type' => 'post', 'posts_per_page' => 3, 'post__not_in' => [ get_the_ID() ] ] );
+		if ( $more ) :
+			?>
+			<section class="wrap section guide-more">
+				<div class="section__head"><h2>Flere guides</h2><span class="section__line"></span><a class="section__more" href="<?php echo esc_url( $blog ); ?>">Se alle</a></div>
+				<div class="guides-list">
+					<?php foreach ( $more as $m ) : ?>
+						<a href="<?php echo esc_url( get_permalink( $m ) ); ?>" class="guide-row">
+							<img src="<?php echo esc_url( get_the_post_thumbnail_url( $m, 'thumbnail' ) ?: playform_asset( 'cat-placeholder.svg' ) ); ?>" alt="" loading="lazy">
+							<span><b><?php echo esc_html( get_the_title( $m ) ); ?></b><span><?php echo esc_html( get_the_date( 'j. M Y', $m ) . ( playform_post_ad_label( $m ) ? ' · ' . playform_post_ad_label( $m ) : '' ) ); ?></span></span>
+						</a>
+					<?php endforeach; ?>
+				</div>
+			</section>
+		<?php endif; ?>
 	<?php endif; ?>
 	<?php
 endwhile;

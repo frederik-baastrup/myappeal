@@ -9,6 +9,34 @@
 defined( 'ABSPATH' ) || exit;
 
 const PLAYFORM_FRONT_GUIDES_KEY = 'playform_front_guides_v1';
+const PLAYFORM_FRONT_GUIDES_SCHEMA = 2; // hæves, når datastrukturen ændres – så bygges cachen om med det samme
+
+/**
+ * Er produktfotoet mørkt? Måler hjørnerne og midten af det lokalt cachede billede (kun når cachen bygges, højst hver 12. time).
+ */
+function playform_image_is_dark( string $url ): bool {
+	$up = wp_get_upload_dir();
+	if ( ! function_exists( 'imagecreatefromstring' ) || ! str_starts_with( $url, (string) $up['baseurl'] ) ) {
+		return false;
+	}
+	$file = $up['basedir'] . substr( $url, strlen( (string) $up['baseurl'] ) );
+	$raw  = is_file( $file ) && filesize( $file ) < 4000000 ? file_get_contents( $file ) : false; // phpcs:ignore
+	$im   = $raw ? @imagecreatefromstring( $raw ) : false; // phpcs:ignore
+	if ( ! $im ) {
+		return false;
+	}
+	$w   = imagesx( $im );
+	$h   = imagesy( $im );
+	$sum = 0;
+	$n   = 0;
+	foreach ( [ [ .04, .04 ], [ .96, .04 ], [ .04, .96 ], [ .96, .96 ], [ .5, .5 ], [ .3, .5 ], [ .7, .5 ] ] as [ $fx, $fy ] ) {
+		$c    = imagecolorsforindex( $im, imagecolorat( $im, (int) ( $fx * ( $w - 1 ) ), (int) ( $fy * ( $h - 1 ) ) ) );
+		$sum += 0.2126 * $c['red'] + 0.7152 * $c['green'] + 0.0722 * $c['blue'];
+		++$n;
+	}
+	imagedestroy( $im );
+	return $n && $sum / $n < 70;
+}
 
 /**
  * [ 'count' => int, 'topics' => [ emne => [ 'label', 'guides' => [ id … ] ] ], 'guides' => [ id => guide ] ].
@@ -21,7 +49,7 @@ function playform_front_guides(): array {
 		return $data;
 	}
 	$cached = get_transient( PLAYFORM_FRONT_GUIDES_KEY );
-	if ( is_array( $cached ) && isset( $cached['guides'] ) ) {
+	if ( is_array( $cached ) && isset( $cached['guides'] ) && PLAYFORM_FRONT_GUIDES_SCHEMA === ( $cached['schema'] ?? 0 ) ) {
 		$data = $cached;
 		return $data;
 	}
@@ -38,7 +66,7 @@ function playform_guide_label( WP_Post $p ): string {
 }
 
 function playform_front_guides_build(): array {
-	$out = [ 'count' => 0, 'topics' => [], 'guides' => [] ];
+	$out = [ 'schema' => PLAYFORM_FRONT_GUIDES_SCHEMA, 'count' => 0, 'topics' => [], 'guides' => [] ];
 	foreach ( playform_guides_by_topic() as $t => $posts ) {
 		$label = playform_guide_emner()[ $t ][0] ?? $t;
 		$ids   = [];
@@ -66,22 +94,28 @@ function playform_front_guide_row( WP_Post $p, string $topic ): ?array {
 	}
 	$img = playform_post_image( $p, 700 );
 	$aid = (int) get_post_thumbnail_id( $p );
-	$top = [];
-	$nr1 = null;
-	$picks = playform_picks( $p->ID );
-	foreach ( array_slice( $picks, 0, 3 ) as $i => $pick ) {
-		$prod  = playform_pick_product( $pick );
-		$row   = [ 'role' => (string) ( $pick['role'] ?? '' ), 'name' => (string) ( $pick['name'] ?? '' ), 'img' => '', 'price' => 0.0 ];
-		if ( $prod ) {
-			$d           = playform_card_data( $prod );
-			$row['name'] = $d['name'];
-			$row['img']  = (string) $d['image'];
-			if ( playform_pick_offer( $prod->get_id() ) ) {
-				$row['price'] = (float) $d['price'];
-			}
+	// Kun brugbare valg (produkt fundet, billede og pris hos en butik på lager) kommer på forsiden.
+	// Rangen beholdes, så "nr. 2" ikke pludselig hedder nr. 1. Nr. 1-hylden tager kun guidens egentlige nr. 1,
+	// og kun når produktfotoet ikke er mørkt (sorte æsker ser tunge ud på hylden).
+	$top    = [];
+	$nr1    = null;
+	$picks  = playform_picks( $p->ID );
+	$usable = 0;
+	foreach ( $picks as $i => $pick ) {
+		$prod = playform_pick_product( $pick );
+		if ( ! $prod || ! playform_pick_offer( $prod->get_id() ) ) {
+			continue;
 		}
-		$top[] = $row;
-		if ( 0 === $i && $row['img'] && $row['price'] > 0 ) {
+		$d = playform_card_data( $prod );
+		if ( ! $d['image'] || $d['price'] <= 0 ) {
+			continue;
+		}
+		++$usable;
+		$row = [ 'rank' => $i + 1, 'role' => (string) ( $pick['role'] ?? '' ), 'name' => $d['name'], 'img' => (string) $d['image'], 'price' => (float) $d['price'] ];
+		if ( count( $top ) < 3 ) {
+			$top[] = $row;
+		}
+		if ( 0 === $i && ! playform_image_is_dark( $row['img'] ) ) {
 			$nr1 = $row;
 		}
 	}
@@ -90,6 +124,8 @@ function playform_front_guide_row( WP_Post $p, string $topic ): ?array {
 		'slug'       => $p->post_name,
 		'title'      => get_the_title( $p ),
 		'short'      => playform_guide_label( $p ),
+		'head'       => playform_guide_short( $p ),
+		'front'      => $usable >= 3,
 		'excerpt'    => has_excerpt( $p ) ? get_the_excerpt( $p ) : '',
 		'topic'      => $topic,
 		'date'       => get_the_date( 'Y-m-d', $p ),
@@ -142,7 +178,8 @@ function playform_front_search_json(): string {
 	$rows   = [];
 	foreach ( playform_front_latest( 999 ) as $g ) {
 		$rows[] = [
-			't' => wp_specialchars_decode( $g['title'], ENT_QUOTES ),
+			't' => wp_specialchars_decode( $g['head'], ENT_QUOTES ),
+			'x' => wp_specialchars_decode( $g['title'], ENT_QUOTES ),
 			's' => $g['short'],
 			'e' => $topics[ $g['topic'] ]['label'] ?? '',
 			'u' => $g['url'],
