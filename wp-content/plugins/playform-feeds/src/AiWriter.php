@@ -19,7 +19,7 @@ final class AiWriter {
 	public const MAX_WORDS     = 125;
 
 	private const SYSTEM = <<<TXT
-Du skriver korte, unikke produkttekster på dansk til {SITE}, en side der samler {NICHE} fra flere danske webshops. Læseren vil hurtigt forstå, hvad produktet er, og hvad der kendetegner det.
+Du skriver korte, unikke produkttekster på dansk til {SITE}, en side der samler {NICHE} fra de butikker, vi samarbejder med. Læseren vil hurtigt forstå, hvad produktet er, og hvad der kendetegner det.
 
 Regler – de er vigtigere end alt andet:
 1. Brug KUN fakta, der står i produktdataene. Opfind aldrig mål, vægt, effekt, kapacitet, materialer, garanti, programmer eller andre specifikationer. Tal skal stå i dataene.

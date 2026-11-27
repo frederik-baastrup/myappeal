@@ -1,7 +1,8 @@
 <?php
 /**
  * Forside (Myappeal, 26. nov. 2026): redaktionelt købsguide-magasin.
- * Hero → Udvalgt lige nu → én sektion pr. emne (faner + scene-kort) → Nr. 1-hylden → Sådan vælger vi → Flere nye guides → SEO-tekst.
+ * Hero → Udvalgt lige nu → Shop efter kategori → én sektion pr. emne (faner + scene-kort + kategorilinks) → Nr. 1-hylden
+ * → Aktuelle tilbud → Sådan vælger vi → Flere nye guides → SEO-tekst. Butikken (kategorier, tilbud) kom tilbage 27. nov. 2026.
  * Alle data kommer fra playform_front_guides() (transient i 12 timer). Faner og skift er ren JS/CSS på den renderede HTML;
  * uden JS står alle scene-kort under hinanden.
  */
@@ -11,6 +12,7 @@ get_header();
 $fg     = playform_front_guides();
 $guides = $fg['guides'];
 $topics = $fg['topics'];
+$shop   = playform_front_shop();
 $arrow  = playform_icon( 'arrow-right', 16, 1.6 );
 $money  = home_url( '/saadan-tjener-vi-penge/' );
 $plural = static fn( int $n ): string => $n . ' ' . ( 1 === $n ? 'guide' : 'guides' );
@@ -92,8 +94,33 @@ foreach ( playform_front_latest( 999 ) as $id => $g ) {
 	</section>
 <?php endif; ?>
 
+<?php if ( count( $shop['cats'] ) >= 4 ) : ?>
+	<section class="ma-sec ma-sec--blush ma-shopcats ma-reveal" aria-labelledby="h-shop">
+		<div class="wrap">
+			<div class="ma-sec__head">
+				<div>
+					<p class="ma-kicker">Shop · <b><?php echo esc_html( number_format_i18n( array_sum( array_column( $shop['cats'], 'count' ) ) ) ); ?></b> produkter</p>
+					<h2 id="h-shop">Shop efter kategori</h2>
+					<p class="ma-sec__sub">Produkter fra de butikker, vi samarbejder med. Priser og lager opdateres hver dag, og du handler hos butikken selv.</p>
+				</div>
+				<?php if ( $shop['deal_count'] > 0 ) : ?><a class="ma-link" href="<?php echo esc_url( playform_tilbud_url() ); ?>">Se butikkernes tilbud <?php echo $arrow; // phpcs:ignore ?></a><?php endif; ?>
+			</div>
+			<ul class="ma-cats">
+				<?php foreach ( $shop['cats'] as $c ) : ?>
+					<li>
+						<a class="ma-cat" href="<?php echo esc_url( $c['url'] ); ?>">
+							<span class="ma-cat__img"><img src="<?php echo esc_url( $c['img_s'] ?: $c['img'] ); ?>" alt="" loading="lazy" width="800" height="550"></span>
+							<span class="ma-cat__body"><b><?php echo esc_html( $c['label'] ); ?></b><small><?php echo esc_html( number_format_i18n( $c['count'] ) ); ?> produkter</small></span>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	</section>
+<?php endif; ?>
+
 <?php
-$k = 0;
+$k = count( $shop['cats'] ) >= 4 ? 1 : 0; // skift mellem hvid og blush efter sektionen ovenfor
 foreach ( $topics as $t => $topic ) :
 	$all   = $topic['guides'];
 	$ids   = array_values( array_filter( $all, static fn( $id ) => ! empty( $guides[ $id ]['front'] ) ) );
@@ -150,6 +177,14 @@ foreach ( $topics as $t => $topic ) :
 					</ul>
 				</details>
 			<?php endif; ?>
+			<?php if ( ! empty( $shop['topics'][ $t ] ) ) : ?>
+				<nav class="ma-shoprow" aria-label="<?php echo esc_attr( 'Shop ' . $lc ); ?>">
+					<span class="ma-kicker">Shop <?php echo esc_html( $lc ); ?></span>
+					<?php foreach ( $shop['topics'][ $t ] as $c ) : ?>
+						<a class="ma-chip" href="<?php echo esc_url( $c['url'] ); ?>"><?php echo esc_html( $c['label'] ); ?><span><?php echo esc_html( number_format_i18n( $c['count'] ) ); ?></span></a>
+					<?php endforeach; ?>
+				</nav>
+			<?php endif; ?>
 		</div>
 	</section>
 <?php endforeach; ?>
@@ -188,6 +223,37 @@ foreach ( playform_front_latest( 999 ) as $g ) {
 						</a>
 					</li>
 				<?php endforeach; ?>
+		</ul>
+	</section>
+<?php endif; ?>
+
+<?php if ( count( $shop['deals'] ) >= 4 ) : ?>
+	<section class="ma-sec ma-sec--blush ma-shelf ma-deals ma-reveal" aria-labelledby="h-tilbud">
+		<div class="wrap">
+			<div class="ma-sec__head">
+				<div>
+					<p class="ma-kicker">Aktuelle tilbud · <b><?php echo esc_html( number_format_i18n( $shop['deal_count'] ) ); ?></b> i alt</p>
+					<h2 id="h-tilbud">Sat ned af butikkerne</h2>
+					<p class="ma-sec__sub">Butikkernes egne tilbud, højst <?php echo (int) ( class_exists( '\Playform\Feeds\Sales' ) ? \Playform\Feeds\Sales::DAYS : 14 ); ?> dage gamle. Den endelige pris ser du hos butikken. <span class="ma-adtag">Reklamelinks</span></p>
+				</div>
+				<div class="ma-arrows" data-slider-arrows="ma-deals">
+					<button type="button" data-dir="-1" aria-label="Forrige"><?php echo playform_icon( 'arrow-left', 18, 1.4 ); // phpcs:ignore ?></button>
+					<button type="button" data-dir="1" aria-label="Næste"><?php echo playform_icon( 'arrow-right', 18, 1.4 ); // phpcs:ignore ?></button>
+				</div>
+			</div>
+		</div>
+		<ul class="ma-shelf__row" id="ma-deals">
+			<?php foreach ( $shop['deals'] as $d ) : $pct = $d['was'] > $d['price'] ? (int) round( ( $d['was'] - $d['price'] ) / $d['was'] * 100 ) : 0; ?>
+				<li class="slider__item">
+					<a class="ma-pcard" href="<?php echo esc_url( $d['url'] ); ?>">
+						<span class="ma-pcard__img"><img src="<?php echo esc_url( $d['img'] ); ?>" alt="" loading="lazy"><?php if ( $pct >= 5 ) : ?><i class="ma-pcard__pct">−<?php echo (int) $pct; ?> %</i><?php endif; ?></span>
+						<span class="ma-kicker"><?php echo esc_html( $d['brand'] ?: 'Tilbud hos ' . $d['shop'] ); ?></span>
+						<span class="ma-pcard__name"><?php echo esc_html( $d['name'] ); ?></span>
+						<span class="ma-pcard__foot"><b class="ma-pcard__sale"><?php echo esc_html( playform_kr( $d['price'] ) ); ?><?php if ( $d['was'] > $d['price'] ) : ?> <s title="<?php echo 'shop' === $d['was_src'] ? 'Butikkens førpris' : 'Laveste pris de 30 dage før tilbuddet'; ?>"><?php echo esc_html( playform_kr( $d['was'] ) ); ?></s><?php endif; ?></b><span class="ma-pcard__go"><?php echo esc_html( $d['shop'] ); ?></span></span>
+						<?php if ( 'shop' === $d['was_src'] ) : ?><span class="ma-pcard__note">Butikkens førpris</span><?php endif; ?>
+					</a>
+				</li>
+			<?php endforeach; ?>
 		</ul>
 	</section>
 <?php endif; ?>

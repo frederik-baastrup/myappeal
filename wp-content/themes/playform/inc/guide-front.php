@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 const PLAYFORM_FRONT_GUIDES_KEY = 'playform_front_guides_v1';
-const PLAYFORM_FRONT_GUIDES_SCHEMA = 2; // hæves, når datastrukturen ændres – så bygges cachen om med det samme
+const PLAYFORM_FRONT_GUIDES_SCHEMA = 3; // hæves, når datastrukturen ændres – så bygges cachen om med det samme
 
 /**
  * Er produktfotoet mørkt? Måler hjørnerne og midten af det lokalt cachede billede (kun når cachen bygges, højst hver 12. time).
@@ -85,7 +85,86 @@ function playform_front_guides_build(): array {
 		}
 	}
 	$out['count'] = count( $out['guides'] );
+	$out['shop']  = playform_front_shop_build();
 	return $out;
+}
+
+/**
+ * Butikken i samme cache (27. nov. 2026, Myappeal er shop igen): kategorier pr. emne med underkategorier,
+ * alle hovedkategorier i menuens rækkefølge og butikkernes aktuelle tilbud. Bygges kun, når cachen er tom.
+ */
+function playform_front_shop_build(): array {
+	$shop   = [ 'topics' => [], 'cats' => [], 'deals' => [], 'deal_count' => 0 ];
+	$labels = playform_menu_labels();
+	foreach ( playform_topic_categories() as $t => $slugs ) {
+		foreach ( $slugs as $slug ) {
+			$term = get_term_by( 'slug', $slug, 'product_cat' );
+			if ( ! $term instanceof WP_Term || $term->count < 1 ) {
+				continue;
+			}
+			$subs = [];
+			foreach ( playform_sub_links( $slug ) as [ $name, $args, $n ] ) {
+				$subs[] = [ 'label' => $labels[ $args['sub'] ] ?? wp_specialchars_decode( $name ), 'slug' => $args['sub'], 'url' => playform_category_url( $args['sub'] ), 'count' => (int) $n ];
+			}
+			$row = [
+				'slug'  => $slug,
+				'label' => playform_cat_label( $term ),
+				'url'   => (string) get_term_link( $term ),
+				'img'   => playform_category_image( $slug ),
+				'img_s' => is_file( get_template_directory() . "/assets/img/cat-$slug-800.jpg" ) ? playform_asset( "cat-$slug-800.jpg" ) : '',
+				'thumb' => playform_category_thumb( $slug ),
+				'count' => (int) $term->count,
+				'subs'  => $subs,
+			];
+			$shop['topics'][ $t ][] = $row;
+			$shop['cats'][]         = $row;
+		}
+	}
+	// Butikkernes egne tilbud (højst 14 dage gamle, se Sales) på varer fra 150 kr, største rabat først.
+	$q = new WP_Query(
+		[
+			'post_type'              => 'product',
+			'post_status'            => 'publish',
+			'fields'                 => 'ids',
+			'posts_per_page'         => 12,
+			'update_post_term_cache' => false,
+			'meta_key'               => '_pf_sale_percent',
+			'orderby'                => 'meta_value_num',
+			'order'                  => 'DESC',
+			'meta_query'             => [
+				[ 'key' => '_pf_shop_sale', 'compare' => 'EXISTS' ],
+				[ 'key' => '_pf_in_stock', 'value' => 1, 'type' => 'NUMERIC' ],
+				[ 'key' => '_price', 'value' => 150, 'compare' => '>=', 'type' => 'NUMERIC' ],
+			],
+		]
+	);
+	$shop['deal_count'] = (int) $q->found_posts;
+	foreach ( $q->posts as $id ) {
+		$p = wc_get_product( $id );
+		if ( ! $p ) {
+			continue;
+		}
+		$d = playform_card_data( $p );
+		if ( ! $d['image'] || $d['price'] <= 0 || ! $d['sale'] ) {
+			continue;
+		}
+		$shop['deals'][] = [
+			'url'     => $d['url'],
+			'name'    => $d['name'],
+			'brand'   => $d['brand'],
+			'img'     => (string) $d['image'],
+			'price'   => (float) $d['price'],
+			'was'     => (float) $d['was'],
+			'was_src' => $d['was_src'],
+			'shop'    => $d['shop'],
+		];
+	}
+	return $shop;
+}
+
+/** Butiksdelen af cachen (tom struktur, hvis den mangler). */
+function playform_front_shop(): array {
+	return playform_front_guides()['shop'] ?? [ 'topics' => [], 'cats' => [], 'deals' => [], 'deal_count' => 0 ];
 }
 
 function playform_front_guide_row( WP_Post $p, string $topic ): ?array {
@@ -171,7 +250,7 @@ function playform_front_price( float $price ): string {
 	return $price > 0 ? 'fra ' . playform_kr( $price ) : '';
 }
 
-/** Listen, som søgningen i guides filtrerer i (lægges inline i siden – ingen serverkald). */
+/** Listen, som søgningen (guides og kategorier) filtrerer i (lægges inline i siden – ingen serverkald). */
 function playform_front_search_json(): string {
 	$data   = playform_front_guides();
 	$topics = $data['topics'];
@@ -186,6 +265,13 @@ function playform_front_search_json(): string {
 			'i' => $g['thumb'],
 			'k' => str_replace( '-', ' ', $g['slug'] ),
 		];
+	}
+	// Kategorier og underkategorier (27. nov. 2026): samme liste, typen 'y' => 'c'.
+	foreach ( $data['shop']['cats'] ?? [] as $c ) {
+		$rows[] = [ 't' => $c['label'], 'x' => '', 's' => $c['label'], 'e' => 'Kategori', 'u' => $c['url'], 'i' => $c['thumb'], 'k' => $c['slug'], 'y' => 'c', 'n' => $c['count'] ];
+		foreach ( $c['subs'] as $sub ) {
+			$rows[] = [ 't' => $sub['label'], 'x' => $c['label'], 's' => $sub['label'], 'e' => $c['label'], 'u' => $sub['url'], 'i' => $c['thumb'], 'k' => str_replace( '-', ' ', $sub['slug'] ), 'y' => 'c', 'n' => $sub['count'] ];
+		}
 	}
 	return (string) wp_json_encode( $rows, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP );
 }

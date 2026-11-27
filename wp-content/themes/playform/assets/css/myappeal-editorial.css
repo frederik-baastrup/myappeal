@@ -517,3 +517,124 @@ main > .ma-seo:last-child { margin-bottom: 0; }
 
 @media (max-width: 1080px) { .ma-head .menu-toggle { width: 44px; height: 44px; margin-right: -12px; } .ma-searchbtn { width: 44px; height: 44px; } }
 .guide__body.prose table.cmp td a, .prose .cmp a { text-decoration: none !important; }
+
+/* ===== Butikken er tilbage (27. nov. 2026): mega-menu med kategorier, forsidens kategorikort og tilbud, kategorisider ===== */
+
+/* Mega-menu: Shop | Købsguides | Nyeste guide */
+.ma-mega__in--shop { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, .85fr); gap: 36px; }
+.ma-mega__in--shop .ma-mega__feat { min-height: 280px; }
+.ma-mega__in--shop .ma-mega__title { font-size: 22px; }
+.ma-mega__shop { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding-right: 36px; border-right: 1px solid rgba(17,17,17,.07); }
+.ma-mega__cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px 24px; }
+.ma-mcat { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ma-mcat__head { display: inline-flex; align-items: baseline; gap: 8px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.ma-mcat__head small { font-size: 12px; font-weight: 600; color: var(--ma-pink); }
+.ma-mcat__head:hover { color: var(--ma-pink); }
+.ma-mcat ul { display: flex; flex-direction: column; gap: 1px; margin: 0; padding: 0; list-style: none; }
+.ma-mcat ul a { display: block; padding: 4px 0; font-size: 14.5px; color: #3F3F3B; }
+.ma-mcat ul a:hover { color: var(--ma-pink); }
+.ma-nav__link--sale { color: var(--ma-pink); font-weight: 600; }
+.ma-nav__link--sale:hover { background: var(--ma-blush); color: var(--ma-pink-hover); }
+
+/* Kampagnebaren i aubergine */
+.campaign-bar { background: var(--ma-aubergine); }
+.campaign-bar__btn { color: #fff; }
+.campaign-bar__item b { color: #FF7CC0; }
+
+/* Mobilmenu: kategorier i emnet */
+.ma-dr__kick { margin: 18px 0 6px; color: #5E5E59; }
+.ma-dr__kick:first-of-type { margin-top: 6px; }
+.ma-dr__cats { margin: 0 0 8px; padding: 0; list-style: none; }
+.ma-dr__cats > li + li { border-top: 1px solid rgba(17,17,17,.06); }
+.ma-dr__cat { display: flex; align-items: center; gap: 14px; min-height: 68px; padding: 8px 0; }
+.ma-dr__cat > svg { margin-left: auto; opacity: .4; flex: 0 0 auto; }
+.ma-dr__subs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.ma-dr__subs a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; background: var(--ma-blush); font-size: 14px; }
+
+/* Søgeresultater: kategorier får runde thumbs */
+.ma-search__results .ma-thumb--l img, .ma-dr__results .ma-thumb--l img { object-position: center 30%; }
+
+/* Forsiden: Shop efter kategori */
+.ma-cats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.ma-cat { position: relative; display: flex; align-items: flex-end; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: var(--ma-blush-2); color: #fff; }
+.ma-cat__img, .ma-cat__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ma-cat__img img { transition: transform .6s var(--ma-ease); }
+.ma-cat:hover .ma-cat__img img { transform: scale(1.05); }
+.ma-cat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(42,15,31,.78) 0%, rgba(42,15,31,.2) 50%, rgba(42,15,31,0) 75%); }
+.ma-cat__body { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2px; padding: 18px; }
+.ma-cat__body b { font-size: 20px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+.ma-cat__body small { font-size: 13px; color: rgba(255,255,255,.86); }
+.ma-cat:hover { color: #fff; }
+@media (max-width: 1080px) { .ma-cats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+	.ma-cats { display: flex; gap: 10px; margin: 0 -18px; padding: 0 18px 8px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 18px; scrollbar-width: none; }
+	.ma-cats::-webkit-scrollbar { display: none; }
+	.ma-cats li { flex: 0 0 42%; scroll-snap-align: start; }
+	.ma-cat { border-radius: 18px; }
+	.ma-cat__body { padding: 14px; }
+	.ma-cat__body b { font-size: 17px; }
+}
+
+/* Emnesektionerne: links til butikkens kategorier */
+.ma-shoprow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 32px; }
+.ma-shoprow .ma-kicker { margin-right: 6px; color: #5E5E59; }
+.ma-sec--blush .ma-shoprow .ma-chip span { background: var(--ma-blush); }
+.ma-sec:not(.ma-sec--blush) .ma-shoprow .ma-chip { box-shadow: none; border: 1px solid rgba(17,17,17,.12); }
+@media (max-width: 760px) { .ma-shoprow .ma-kicker { flex-basis: 100%; } }
+
+/* Forsiden: aktuelle tilbud (hvide kort på blush) */
+.ma-deals .ma-pcard { background: #fff; }
+.ma-deals .ma-pcard__img { border: 0; background: #F7F7F5; }
+.ma-deals .ma-pcard__img img { mix-blend-mode: multiply; }
+.ma-pcard__img .ma-pcard__pct { width: auto; padding: 0 10px; border-radius: 999px; }
+.ma-pcard__sale { color: var(--ma-pink); }
+.ma-pcard__sale s { margin-left: 4px; font-size: 13px; font-weight: 400; color: #6B6B66; }
+.ma-pcard__note { padding: 0 8px; font-size: 11.5px; color: #6B6B66; }
+.ma-deals .ma-pcard__go { max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; font-weight: 500; color: #6B6B66; }
+
+/* Kategori- og tilbudssider: blush-bånd i fuld bredde øverst */
+.cat-top:not(.cat-top--camp) { position: relative; padding-top: 28px; padding-bottom: 36px; margin-bottom: 40px; background: var(--ma-blush); box-shadow: 0 0 0 100vmax var(--ma-blush); clip-path: inset(0 -100vmax); }
+.cat-top__head { gap: 12px; margin-top: 28px; max-width: 760px; }
+.cat-top h1 { font-size: clamp(36px, 5vw, 60px); font-weight: 600; letter-spacing: -.035em; line-height: 1.02; }
+.cat-top p { color: #4A4A46; font-size: 16.5px; }
+.cat-top .ma-cattop__kick { color: var(--ma-ink); font-size: 12px; }
+.cat-top .tabs { margin-top: 28px; gap: 8px; }
+.cat-top .tab { background: #fff; border-color: transparent; box-shadow: 0 1px 2px rgba(42,15,31,.06); font-weight: 500; color: var(--ma-ink); }
+.cat-top .tab:hover { border-color: var(--ma-pink); }
+.cat-top .tab.is-active { background: var(--ma-ink); border-color: var(--ma-ink); color: #fff; }
+.cat-top .tab__n { color: var(--ma-pink); font-weight: 600; }
+.cat-top .tab.is-active .tab__n { color: #FF9ACF; }
+.cat-top .tab--sale { color: var(--ma-pink); }
+.cat-top .tab--sale.is-active { background: var(--ma-pink); border-color: var(--ma-pink); color: #fff; }
+.cat-top .tab--sale.is-active .tab__n { color: #fff; }
+@media (max-width: 760px) {
+	.cat-top:not(.cat-top--camp) { padding-top: 16px; padding-bottom: 24px; margin-bottom: 24px; }
+	.cat-top .tabs { flex-wrap: nowrap; margin-right: -18px; padding-right: 18px; }
+}
+
+/* Filtre, sortering, prisknapper og sider i pink/blush */
+.opt.is-checked .opt__box { background: var(--ma-pink); border-color: var(--ma-pink); }
+.opt:hover { color: var(--ma-pink); }
+.opt__n { color: #8A8A84; }
+.fsec { border-bottom-color: rgba(17,17,17,.07); }
+.filters__head { border-bottom-color: rgba(17,17,17,.07); }
+.pricepill.is-active, .pg.is-on { background: var(--ma-ink); border-color: var(--ma-ink); color: #fff; }
+.pricepill:hover, .pg:hover, .tag:hover, .select select:hover { border-color: var(--ma-pink); }
+.tag { background: var(--ma-blush); border-color: transparent; }
+.adline b { color: var(--ma-pink); }
+.empty { border: 0; background: var(--ma-blush); border-radius: 24px; }
+.empty .btn, .btn { background: var(--ma-ink); }
+.empty .btn:hover, .btn:hover { background: var(--ma-pink); }
+
+/* Produktkort på kategorisider: blødere billedflade og pink pris ved tilbud */
+.results .pcard__img { border-radius: 20px; background: #F7F5F6; }
+.results .pcard:hover .pcard__img { background: var(--ma-blush); }
+.results .pcard__brand { color: var(--ma-pink); letter-spacing: .02em; }
+.results .pcard__name { font-weight: 500; }
+
+/* "Kig videre" og FAQ under kategorien */
+.rel { border-top: 0; padding: 28px; border-radius: 24px; background: var(--ma-blush); }
+.rel__h { color: var(--ma-pink); }
+.rel__col a { text-decoration: none; }
+.rel__col a:hover { color: var(--ma-pink); }
+.faq summary svg { color: var(--ma-pink); }

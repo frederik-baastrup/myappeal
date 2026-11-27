@@ -1149,7 +1149,60 @@ add_action(
 		update_option( 'playform_config_hash', (string) md5_file( WP_PLUGIN_DIR . '/playform-feeds/src/Config.php' ), false );
 		update_option( 'playform_reclassify_last', [ 'time' => current_time( 'mysql' ) ] + $res, false );
 		playform_remove_dropped_categories();
+		if ( ! wp_next_scheduled( 'playform_purge_excluded' ) ) {
+			wp_schedule_single_event( time() + 120, 'playform_purge_excluded' );
+		}
 	}
+);
+
+/**
+ * Sletter produkter permanent, hvis alle deres tilbud er udelukket (Outdoorland 26. nov. 2026, Myappeal 27. nov. 2026:
+ * databasen må højst fylde 1.000 MB – varer under 150 kr, herreprodukter, fjernede butikker, udsolgt i over 30 dage). Kun kladder uden aktive tilbud.
+ * Direkte SQL i portioner á 1.000 (wp_delete_post er for tungt til titusinder), fortsætter via cron til alt er væk.
+ */
+add_action(
+	'playform_purge_excluded',
+	static function () {
+		global $wpdb;
+		@set_time_limit( 0 ); // phpcs:ignore
+		$o   = \Playform\Feeds\Offers::table();
+		$h   = \Playform\Feeds\PriceHistory::table();
+		$ids = array_map( 'intval', (array) $wpdb->get_col(
+			"SELECT p.ID FROM {$wpdb->posts} p
+			 WHERE p.post_type = 'product' AND p.post_status = 'draft'
+			 AND EXISTS ( SELECT 1 FROM $o x WHERE x.product_id = p.ID )
+			 AND NOT EXISTS ( SELECT 1 FROM $o x WHERE x.product_id = p.ID AND x.category <> 'exclude' )
+			 LIMIT 1000"
+		) );
+		if ( ! $ids ) {
+			$wpdb->query( "OPTIMIZE TABLE {$wpdb->posts}, {$wpdb->postmeta}, {$wpdb->term_relationships}, $o, $h" );
+			update_option( 'playform_purge_excluded_done', current_time( 'mysql' ), false );
+			return;
+		}
+		$in = implode( ',', $ids );
+		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ($in)" );
+		$wpdb->query( "DELETE FROM {$wpdb->term_relationships} WHERE object_id IN ($in)" );
+		$wpdb->query( "DELETE FROM $h WHERE product_id IN ($in)" );
+		$wpdb->query( "DELETE FROM $o WHERE product_id IN ($in)" );
+		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN ($in) OR ( post_parent IN ($in) AND post_type IN ('attachment','product_variation') )" );
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}wc_product_meta_lookup'" ) ) {
+			$wpdb->query( "DELETE FROM {$wpdb->prefix}wc_product_meta_lookup WHERE product_id IN ($in)" );
+		}
+		update_option( 'playform_purge_excluded_count', (int) get_option( 'playform_purge_excluded_count', 0 ) + count( $ids ), false );
+		wp_cache_flush();
+		wp_schedule_single_event( time() + 60, 'playform_purge_excluded' );
+	}
+);
+
+/** Slettede produktsider svarer 410 (væk for altid), så Google fjerner dem hurtigt. */
+add_action(
+	'template_redirect',
+	static function () {
+		if ( is_404() && str_starts_with( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/produkt/' ) ) { // phpcs:ignore
+			status_header( 410 );
+		}
+	},
+	1
 );
 
 /** Kategorier, der er fjernet fra Config (Myappeal: barbering og herrekategorier 10. nov. 2026), slettes med underkategorier. */

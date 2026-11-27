@@ -353,10 +353,10 @@ final class Importer {
 	public static function too_cheap( array $offer ): bool {
 		$min = method_exists( Config::class, 'min_price' ) ? (float) Config::min_price() : 0.0;
 		$p   = (float) ( $offer['price'] ?? 0 );
-		if ( method_exists( Config::class, 'guide_eans' ) ) { // kun guidernes varer (Myappeal, 24. nov. 2026)
+		if ( method_exists( Config::class, 'guide_eans' ) ) { // købsguidernes varer kommer altid med (Myappeal, 27. nov. 2026)
 			$g = Config::guide_eans();
-			if ( null !== $g && ! isset( $g[ ltrim( (string) ( $offer['ean'] ?? '' ), '0' ) ] ) ) {
-				return true;
+			if ( null !== $g && isset( $g[ ltrim( (string) ( $offer['ean'] ?? '' ), '0' ) ] ) ) {
+				return false;
 			}
 		}
 		return $min > 0 && $p > 0 && $p < $min && ! ( (float) ( $offer['list_price'] ?? 0 ) > $p );

@@ -254,7 +254,7 @@ function playform_product_schema( WC_Product $product, array $offers, array $d )
 		$data['description'] = mb_substr( $desc, 0, 500 );
 	} else {
 		// Uden egen tekst: en neutral beskrivelse, kun ud fra data vi har (navn, mærke, kategori).
-		$data['description'] = trim( $product->get_name() . ( $d['brand'] ? ' fra ' . $d['brand'] : '' ) . ( $cat ? ' i kategorien ' . wp_specialchars_decode( $cat->name ) : '' ) . '. Se pris og lagerstatus hos danske butikker.' );
+		$data['description'] = trim( $product->get_name() . ( $d['brand'] ? ' fra ' . $d['brand'] : '' ) . ( $cat ? ' i kategorien ' . wp_specialchars_decode( $cat->name ) : '' ) . '. Se pris og lagerstatus hos de butikker, vi samarbejder med.' );
 	}
 	if ( $offers ) {
 		$in     = array_values( array_filter( $offers, static fn( $o ) => ! empty( $o['in_stock'] ) ) ) ?: $offers;

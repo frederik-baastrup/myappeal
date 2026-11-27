@@ -536,7 +536,7 @@ document.addEventListener('click', function (e) {
 		});
 	});
 
-	// Søg i guides: filtrerer den inline JSON-liste (titel, kort navn, emne, adresse).
+	// Søg i kategorier og guides: filtrerer den inline JSON-liste (titel, kort navn, emne, adresse). y = 'c' er en kategori.
 	var dataEl = document.getElementById('ma-guides-data');
 	var guides = [];
 	try { guides = dataEl ? JSON.parse(dataEl.textContent) : []; } catch (err) { guides = []; }
@@ -544,12 +544,12 @@ document.addEventListener('click', function (e) {
 	guides.forEach(function (g) { g.hay = norm(g.t + ' ' + (g.x || '') + ' ' + g.s + ' ' + g.e + ' ' + g.k); g.sn = norm(g.s); });
 	function find(q) {
 		q = norm(q).trim();
-		if (!q) return guides.slice(0, 6);
+		if (!q) return guides.filter(function (g) { return g.y !== 'c'; }).slice(0, 6);
 		var words = q.split(/\s+/);
 		return guides.map(function (g) {
 			if (!words.every(function (w) { return g.hay.indexOf(w) > -1; })) return null;
-			return { g: g, score: g.sn.indexOf(q) === 0 ? 0 : (g.sn.indexOf(q) > -1 ? 1 : 2) };
-		}).filter(Boolean).sort(function (a, b) { return a.score - b.score; }).slice(0, 8).map(function (x) { return x.g; });
+			return { g: g, score: (g.sn.indexOf(q) === 0 ? 0 : (g.sn.indexOf(q) > -1 ? 2 : 4)) + (g.y === 'c' ? 0 : 1) };
+		}).filter(Boolean).sort(function (a, b) { return a.score - b.score; }).slice(0, 10).map(function (x) { return x.g; });
 	}
 	function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 	var uid = 0;
@@ -568,12 +568,12 @@ document.addEventListener('click', function (e) {
 			var q = input.value;
 			var res = find(q);
 			active = -1;
-			if (label) label.textContent = q.trim() ? (res.length ? res.length + (res.length === 1 ? ' guide' : ' guides') : 'Ingen guides') : 'Nyeste guides';
+			if (label) label.textContent = q.trim() ? (res.length ? res.length + (res.length === 1 ? ' resultat' : ' resultater') : 'Ingen resultater') : 'Nyeste guides';
 			list.innerHTML = res.length ? res.map(function (g) {
 				return '<li role="option" id="mas-' + (++uid) + '" aria-selected="false"><a href="' + esc(g.u) + '" tabindex="-1">'
 					+ '<span class="ma-thumb ma-thumb--l">' + (g.i ? '<img src="' + esc(g.i) + '" alt="" width="52" height="52">' : '') + '</span>'
-					+ '<span class="ma-res__txt"><small>' + esc(g.e) + ' · Reklamelinks</small><b>' + esc(g.t) + '</b></span></a></li>';
-			}).join('') : '<li class="ma-res__empty">Ingen guide matcher «' + esc(q) + '». Prøv fx serum, hår eller parfume.</li>';
+					+ '<span class="ma-res__txt"><small>' + (g.y === 'c' ? 'Shop · ' + esc(g.x || 'Kategori') + ' · ' + Number(g.n || 0).toLocaleString('da-DK') + ' produkter' : 'Guide · ' + esc(g.e) + ' · Reklamelinks') + '</small><b>' + esc(g.t) + '</b></span></a></li>';
+			}).join('') : '<li class="ma-res__empty">Intet matcher «' + esc(q) + '». Prøv fx serum, hår eller parfume.</li>';
 			list.dispatchEvent(new CustomEvent('ma:render', { detail: { q: q } }));
 		}
 		input.addEventListener('input', render);

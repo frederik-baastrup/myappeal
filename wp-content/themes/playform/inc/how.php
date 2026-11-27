@@ -54,7 +54,7 @@ function playform_how_html(): string {
 	$email  = sanitize_email( playform_site( 'email' ) );
 	$mail   = '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>';
 	$shops  = function_exists( 'playform_shop_names' ) ? count( playform_shop_names() ) : 0;
-	$shopsl = '<a href="' . esc_url( home_url( '/vores-butikker/' ) ) . '">' . ( $shops > 1 ? "$shops danske webshops" : 'danske webshops' ) . '</a>';
+	$shopsl = '<a href="' . esc_url( home_url( '/vores-butikker/' ) ) . '">' . ( $shops > 1 ? "$shops butikker" : 'butikker' ) . '</a>';
 	$money  = esc_url( home_url( '/saadan-tjener-vi-penge/' ) );
 	$co     = esc_html( playform_site( 'company' ) . ', CVR ' . playform_site( 'cvr' ) );
 

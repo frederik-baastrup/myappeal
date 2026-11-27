@@ -122,6 +122,18 @@ if ( $campaign || $offer_hero ) :
 	<?php if ( ! $campaign && ! $offer_hero ) : ?>
 	<?php playform_breadcrumbs( $crumb ); ?>
 	<div class="cat-top__head">
+		<?php
+		$pf_kick = '';
+		if ( $is_cat && function_exists( 'playform_category_topic' ) ) {
+			$pf_t    = playform_category_topic( playform_root_slug( $term->slug ) );
+			$pf_kick = $pf_t ? 'Shop · ' . playform_guide_emner()[ $pf_t ][0] : 'Shop';
+		} elseif ( $offers ) {
+			$pf_kick = 'Butikkernes egne tilbud';
+		}
+		if ( $pf_kick ) :
+			?>
+			<p class="ma-kicker ma-cattop__kick"><?php echo esc_html( $pf_kick ); ?><?php echo ! empty( $state['total'] ) ? ' · <b>' . esc_html( number_format_i18n( (int) $state['total'] ) ) . '</b> ' . ( $offers ? 'tilbud' : 'produkter' ) : ''; ?></p>
+		<?php endif; ?>
 		<h1><?php echo esc_html( $title ); ?></h1>
 		<?php if ( $intro ) : ?><p><?php echo esc_html( wp_strip_all_tags( $intro ) ); ?></p><?php endif; ?>
 		<?php if ( $cnote ) : ?><p class="campaign-note"><?php echo esc_html( $cnote ); ?></p><?php endif; ?>

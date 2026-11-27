@@ -14,6 +14,7 @@
 <?php
 $pf_money = home_url( '/saadan-tjener-vi-penge/' );
 $pf_fg    = playform_front_guides();
+$pf_shop  = playform_front_shop();
 $pf_usps  = [
 	[ 'book', $pf_fg['count'] . ' købsguides', 'i skønhed og pleje' ],
 	[ 'clock', 'Priser opdateret', 'hver dag' ],
@@ -49,23 +50,51 @@ $pf_usps  = [
 			<nav class="ma-nav" aria-label="Emner">
 				<ul class="ma-nav__list">
 					<?php
-					foreach ( $pf_fg['topics'] as $t => $topic ) :
-						$ids  = $topic['guides'];
-						$feat = $pf_fg['guides'][ $ids[0] ];
+					// Emner: butikkens kategorier (venstre) + købsguides (midten) + nyeste guide (højre). Alt fra cachen.
+					foreach ( playform_guide_emner() as $t => [ $tlabel ] ) :
+						$ids   = $pf_fg['topics'][ $t ]['guides'] ?? [];
+						$cats  = $pf_shop['topics'][ $t ] ?? [];
+						if ( ! $ids && ! $cats ) {
+							continue;
+						}
+						$feat  = $ids ? $pf_fg['guides'][ $ids[0] ] : null;
+						$turl  = home_url( '/#' . $t );
 						?>
 						<li class="ma-nav__item" data-mn>
-							<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>" class="ma-nav__link" aria-expanded="false" aria-controls="mn-<?php echo esc_attr( $t ); ?>"><?php echo esc_html( $topic['label'] ); ?></a>
+							<a href="<?php echo esc_url( $turl ); ?>" class="ma-nav__link" aria-expanded="false" aria-controls="mn-<?php echo esc_attr( $t ); ?>"><?php echo esc_html( $tlabel ); ?></a>
 							<div class="ma-mega" id="mn-<?php echo esc_attr( $t ); ?>">
-								<div class="ma-mega__in">
+								<div class="ma-mega__in<?php echo $cats ? ' ma-mega__in--shop' : ''; ?>">
+									<?php if ( $cats ) : ?>
+										<div class="ma-mega__shop">
+											<span class="ma-kicker">Shop <?php echo esc_html( mb_strtolower( $tlabel ) ); ?></span>
+											<div class="ma-mega__cats">
+												<?php foreach ( $cats as $c ) : ?>
+													<div class="ma-mcat">
+														<a class="ma-mcat__head" href="<?php echo esc_url( $c['url'] ); ?>"><?php echo esc_html( $c['label'] ); ?><small><?php echo esc_html( number_format_i18n( $c['count'] ) ); ?></small></a>
+														<?php if ( $c['subs'] ) : ?>
+															<ul>
+																<?php foreach ( array_slice( $c['subs'], 0, count( $cats ) > 1 ? 7 : 14 ) as $sub ) : ?>
+																	<li><a href="<?php echo esc_url( $sub['url'] ); ?>"><?php echo esc_html( $sub['label'] ); ?></a></li>
+																<?php endforeach; ?>
+															</ul>
+														<?php endif; ?>
+													</div>
+												<?php endforeach; ?>
+											</div>
+										</div>
+									<?php endif; ?>
+									<?php if ( $ids ) : ?>
 									<div class="ma-mega__list">
-										<span class="ma-kicker"><?php echo esc_html( $topic['label'] ); ?> · <b><?php echo count( $ids ); ?></b> <?php echo 1 === count( $ids ) ? 'guide' : 'guides'; ?></span>
-										<ul class="ma-mega__guides<?php echo count( $ids ) > 5 ? ' ma-mega__guides--2' : ''; ?>">
-											<?php foreach ( $ids as $id ) : $g = $pf_fg['guides'][ $id ]; ?>
+										<span class="ma-kicker"><?php echo esc_html( $cats ? 'Købsguides' : $tlabel ); ?> · <b><?php echo count( $ids ); ?></b> <?php echo 1 === count( $ids ) ? 'guide' : 'guides'; ?></span>
+										<ul class="ma-mega__guides<?php echo ! $cats && count( $ids ) > 5 ? ' ma-mega__guides--2' : ''; ?>">
+											<?php foreach ( array_slice( $ids, 0, $cats ? 7 : 99 ) as $id ) : $g = $pf_fg['guides'][ $id ]; ?>
 												<li><a href="<?php echo esc_url( $g['url'] ); ?>"><span class="ma-thumb"><?php if ( $g['thumb'] ) : ?><img src="<?php echo esc_url( $g['thumb'] ); ?>" alt="" width="40" height="40" loading="lazy"><?php endif; ?></span><span><?php echo esc_html( $g['short'] ); ?></span></a></li>
 											<?php endforeach; ?>
 										</ul>
-										<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>" class="ma-more">Alle guides om <?php echo esc_html( mb_strtolower( $topic['label'] ) ); ?><?php echo playform_icon( 'arrow-right', 14, 1.6 ); // phpcs:ignore ?></a>
+										<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>" class="ma-more">Alle guides om <?php echo esc_html( mb_strtolower( $tlabel ) ); ?><?php echo playform_icon( 'arrow-right', 14, 1.6 ); // phpcs:ignore ?></a>
 									</div>
+									<?php endif; ?>
+									<?php if ( $feat ) : ?>
 									<a class="ma-mega__feat" href="<?php echo esc_url( $feat['url'] ); ?>">
 										<span class="ma-mega__img"><?php if ( $feat['img'] ) : ?><img src="<?php echo esc_url( $feat['img'] ); ?>" alt="" loading="lazy"><?php endif; ?></span>
 										<span class="ma-mega__body">
@@ -74,36 +103,45 @@ $pf_usps  = [
 											<span class="ma-mega__cta">Se top <?php echo (int) $feat['n']; ?> <?php echo playform_icon( 'arrow-right', 14, 1.6 ); // phpcs:ignore ?></span>
 										</span>
 									</a>
+									<?php endif; ?>
 								</div>
 							</div>
 						</li>
 					<?php endforeach; ?>
+					<?php if ( $pf_shop['deal_count'] > 0 ) : ?>
+						<li class="ma-nav__item"><a href="<?php echo esc_url( playform_tilbud_url() ); ?>" class="ma-nav__link ma-nav__link--sale">Tilbud</a></li>
+					<?php endif; ?>
 				</ul>
 			</nav>
 			<div class="ma-head__end">
-				<button type="button" class="ma-searchbtn" data-search-open aria-haspopup="dialog" aria-controls="ma-search" aria-label="Søg i guides"><?php echo playform_icon( 'search', 20, 1.4 ); // phpcs:ignore ?></button>
+				<button type="button" class="ma-searchbtn" data-search-open aria-haspopup="dialog" aria-controls="ma-search" aria-label="Søg i kategorier og guides"><?php echo playform_icon( 'search', 20, 1.4 ); // phpcs:ignore ?></button>
 				<a href="<?php echo esc_url( playform_guide_url() ); ?>" class="ma-allbtn">Alle købsguides</a>
 				<button type="button" class="menu-toggle" aria-expanded="false" aria-controls="mobilmenu" aria-label="Åbn menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
 			</div>
 		</div>
 	</div>
 </header>
-<?php // Søg i guides: filtrerer listen herunder i browseren – ingen kald til serveren. ?>
-<div class="ma-search" id="ma-search" role="dialog" aria-modal="true" aria-label="Søg i købsguides" hidden>
+<?php // Søg i kategorier og guides: filtrerer listen herunder i browseren – ingen kald til serveren. ?>
+<div class="ma-search" id="ma-search" role="dialog" aria-modal="true" aria-label="Søg i kategorier og købsguides" hidden>
 	<div class="ma-search__bg" data-search-close></div>
 	<div class="ma-search__box">
 		<div class="ma-search__field">
 			<?php echo playform_icon( 'search', 22, 1.4 ); // phpcs:ignore ?>
-			<input type="search" id="ma-search-input" placeholder="Søg i guides – fx serum, glattejern eller mascara" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="ma-search-results" aria-autocomplete="list" data-guide-search="ma-search-results">
+			<input type="search" id="ma-search-input" placeholder="Søg – fx serum, glattejern eller mascara" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="ma-search-results" aria-autocomplete="list" data-guide-search="ma-search-results">
 			<button type="button" class="ma-search__close" data-search-close aria-label="Luk søgning"><?php echo playform_icon( 'close', 20, 1.4 ); // phpcs:ignore ?></button>
 		</div>
 		<p class="ma-kicker ma-search__label" data-search-label>Nyeste guides</p>
-		<ul class="ma-search__results" id="ma-search-results" role="listbox" aria-label="Guides"></ul>
+		<ul class="ma-search__results" id="ma-search-results" role="listbox" aria-label="Kategorier og guides"></ul>
 		<p class="ma-search__hint"><kbd>↑</kbd><kbd>↓</kbd> vælg · <kbd>Enter</kbd> åbn · <kbd>Esc</kbd> luk</p>
 	</div>
 </div>
 <script type="application/json" id="ma-guides-data"><?php echo playform_front_search_json(); // phpcs:ignore ?></script>
-<?php get_template_part( 'template-parts/mobile-menu' ); ?>
+<?php
+if ( $pf_shop['deal_count'] > 0 ) {
+	playform_campaign_bar(); // kun når der er tilbud at vise
+}
+get_template_part( 'template-parts/mobile-menu' );
+?>
 <?php if ( isset( $_GET['nyhedsbrev'] ) && $_GET['nyhedsbrev'] === 'bekraeftet' ) : // phpcs:ignore ?>
 	<div class="notice-bar" role="status"><div class="wrap">Tak – din tilmelding til nyhedsbrevet er bekræftet.</div></div>
 <?php endif; ?>

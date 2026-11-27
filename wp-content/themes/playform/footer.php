@@ -9,12 +9,23 @@
 				<span><?php echo esc_html( playform_site( 'email' ) ); ?></span>
 			</div>
 			<?php $pf_fg = playform_front_guides(); ?>
-			<div class="foot__col">
-				<span class="foot__title">Emner</span>
-				<?php foreach ( $pf_fg['topics'] as $t => $topic ) : ?>
-					<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>"><?php echo esc_html( $topic['label'] ); ?></a>
-				<?php endforeach; ?>
-			</div>
+			<?php $pf_shop = playform_front_shop(); ?>
+			<?php if ( $pf_shop['cats'] ) : ?>
+				<div class="foot__col">
+					<span class="foot__title">Shop</span>
+					<?php foreach ( $pf_shop['cats'] as $c ) : ?>
+						<a href="<?php echo esc_url( $c['url'] ); ?>"><?php echo esc_html( $c['label'] ); ?></a>
+					<?php endforeach; ?>
+					<?php if ( $pf_shop['deal_count'] > 0 ) : ?><a href="<?php echo esc_url( playform_tilbud_url() ); ?>">Tilbud</a><?php endif; ?>
+				</div>
+			<?php else : ?>
+				<div class="foot__col">
+					<span class="foot__title">Emner</span>
+					<?php foreach ( $pf_fg['topics'] as $t => $topic ) : ?>
+						<a href="<?php echo esc_url( home_url( '/#' . $t ) ); ?>"><?php echo esc_html( $topic['label'] ); ?></a>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
 			<div class="foot__col">
 				<span class="foot__title">Nye guides</span>
 				<?php foreach ( playform_front_latest( 5 ) as $g ) : ?>

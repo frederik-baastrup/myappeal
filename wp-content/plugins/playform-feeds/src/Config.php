@@ -491,8 +491,8 @@ final class Config {
 
 	/** Produkter, der aldrig skal med (navn eller butikkens kategori). */
 	/**
-	 * Myappeal er kun købsguides (ejerens valg 24. nov. 2026): importen tager kun de varer, guiderne bruger
-	 * (EAN'er i themes/playform/content/best/*.php). Alle andre varer kommer ikke med.
+	 * Købsguidernes varer (EAN'er i themes/playform/content/best/*.php) kommer altid med, også under min_price()
+	 * (Myappeal er shop igen 27. nov. 2026; fra 24. nov. kom KUN de varer med).
 	 */
 	public static function guide_eans(): ?array {
 		static $eans = null;
@@ -512,9 +512,14 @@ final class Config {
 		return $eans;
 	}
 
-	/** Varer under denne pris kommer ikke med, medmindre de er på tilbud (ejerens valg 21. nov. 2026, spar CPU). */
+	/** Varer under denne pris kommer ikke med, medmindre de er på tilbud (ejerens valg 21. nov. 2026, spar CPU; 150 fra 27. nov. 2026). */
 	public static function min_price(): float {
-		return 100;
+		return 150;
+	}
+
+	/** Nye, udsolgte varer oprettes ikke (Importer); kendte varer bliver liggende som "ikke på lager" (som Outdoorland). */
+	public static function create_out_of_stock(): bool {
+		return false;
 	}
 
 	public static function exclude(): array {

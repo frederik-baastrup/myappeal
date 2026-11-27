@@ -26,7 +26,7 @@ require_once __DIR__ . '/inc/method.php';
 require_once __DIR__ . '/inc/guides.php';
 require_once __DIR__ . '/inc/authors.php';
 require_once __DIR__ . '/inc/best.php';
-require_once __DIR__ . '/inc/guide-only.php';
+require_once __DIR__ . '/inc/topics.php';
 require_once __DIR__ . '/inc/guide-front.php';
 require_once __DIR__ . '/inc/best-check.php';
 require_once __DIR__ . '/inc/links.php';
